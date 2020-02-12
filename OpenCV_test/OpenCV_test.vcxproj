@@ -156,12 +156,14 @@
   <ItemGroup>
     <ClInclude Include="Automaton.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="CircleDetector.h" />
     <ClInclude Include="FuzzyMachine.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Automaton.cpp" />
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="CircleDetector.cpp" />
     <ClCompile Include="FuzzyMachine.cpp" />
     <ClCompile Include="OpenCV_test.cpp" />
     <ClCompile Include="pch.cpp">

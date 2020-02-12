@@ -11,6 +11,7 @@
 #include "Cell.h"
 #include "Automaton.h"
 #include "FuzzyMachine.h"
+#include "CircleDetector.h"
 #include<fstream>
 
 
