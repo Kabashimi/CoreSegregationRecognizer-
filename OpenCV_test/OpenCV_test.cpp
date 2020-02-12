@@ -8,6 +8,10 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <stdio.h>
 #include <cmath>
+#include "Cell.h"
+#include "Automaton.h"
+#include "FuzzyMachine.h"
+#include<fstream>
 
 
 using namespace cv;
@@ -63,8 +67,8 @@ Mat DrawHistogram(Mat src_gray) {
 	std::cout << "SUCCESS\n";
 
 	/// Display
-	namedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE);
-	imshow("calcHist Demo", histImage);
+	//namedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE);
+	//imshow("calcHist Demo", histImage);
 	return hist;
 }
 
@@ -261,10 +265,40 @@ float CalcAvgColor(Mat src, float x, float y, float sx, float sy) {
 	return sum / pixelsNumber;
 }
 
-int main()
-{
+void DrawGrid(Mat src, vector<vector<Cell>> dataGrid) {
+	for (int i = 0; i < dataGrid.size(); i++) {
+		for (int j = 0; j < dataGrid[i].size(); j++) {
+			if (dataGrid[i][j].automatonActive) {
+				Scalar color = Scalar(200, 200, 0);
+				rectangle(src, Point(dataGrid[i][j].x, dataGrid[i][j].y), Point(dataGrid[i][j].x + dataGrid[i][j].xSpan, dataGrid[i][j].y + dataGrid[i][j].ySpan), color, CV_FILLED, 8, 0);
+			}
+		}
+	}
+}
+
+void DrawGrid(Mat src, vector<vector<Cell>> dataGrid, float tresholdValue) {
+	for (int i = 0; i < dataGrid.size(); i++) {
+		for (int j = 0; j < dataGrid[i].size(); j++) {
+			if (dataGrid[i][j].value == 0) {
+				continue;
+			}
+			if (dataGrid[i][j].value < tresholdValue) {
+				Scalar color = Scalar(200, 0, 200);
+				rectangle(src, Point(dataGrid[i][j].x, dataGrid[i][j].y), Point(dataGrid[i][j].x + dataGrid[i][j].xSpan, dataGrid[i][j].y + dataGrid[i][j].ySpan), color, CV_FILLED, 8, 0);
+			}
+		}
+	}
+}
+
+void mainCalcFunction(int photoNumber, bool writeToFile) {
+
+	std::cout << endl << endl;
+	std::cout << "Open image: " << photoNumber << endl;
 	//Load image
-	Mat src = LoadImage("images/2.jpg");
+	String photoName = "images/";
+	photoName += std::to_string(photoNumber);
+	photoName += ".jpg";
+	Mat src = LoadImage(photoName);
 	Mat src_gray;
 	Mat hist;
 
@@ -346,23 +380,35 @@ int main()
 	std::cout << "Lowest color: " << lowestColor << endl;
 
 	float lowestToMeanColor = outerRingMeanColor - lowestColor;
+	vector<vector<Cell> > dataGrid;
+	vector<Cell> tmpDataRow;
 
 
 	for (float x = x0; x < limx; x += sx) {
+
 		for (float y = y0; y < limy; y += sy) {
+			Cell tmpCell;
+			tmpCell.x = x;
+			tmpCell.y = y;
+			tmpCell.xSpan = sx;
+			tmpCell.ySpan = sy;
 			segmentCenterX = x + sx / 2;
 			segmentCenterY = y + sy / 2;
 			distanceToCenter = CalcDistance(circleCenter.x, circleCenter.y, segmentCenterX, segmentCenterY);
 			if (distanceToCenter > excludeRange) {
+				tmpDataRow.push_back(tmpCell);
 				continue;
 			}
 			else if (distanceToCenter > meanRange)
 			{
+
 				rectangle(src, Point(x, y), Point(x + sx, y + sy), Scalar(outerRingMeanColor, outerRingMeanColor, outerRingMeanColor), CV_FILLED, 8, 0);
 			}
 			else
 			{
 				int avgColor = CalcAvgColor(src_gray, x, y, sx, sy);
+				tmpCell.value = avgColor;
+				tmpCell.active = true;
 				if (avgColor < outerRingMeanColor - lowestToMeanColor * 0.8) {
 					rectangle(src, Point(x, y), Point(x + sx, y + sy), Scalar(0, 0, 200), CV_FILLED, 8, 0);
 				}
@@ -377,8 +423,90 @@ int main()
 				}
 
 			}
+			tmpDataRow.push_back(tmpCell);
+		}
+		dataGrid.push_back(tmpDataRow);
+		tmpDataRow.clear();
+	}
+
+	Mat src2 = src.clone();
+	DrawGrid(src2, dataGrid, outerRingMeanColor);
+
+	Mat src3 = src.clone();
+	int tresholdAutomataValue = outerRingMeanColor - lowestToMeanColor * 0.3;
+	Automaton automata = Automaton(dataGrid);
+	dataGrid = automata.runNaiveEvolution(tresholdAutomataValue, 2);
+	dataGrid = automata.runNaiveEvolution(tresholdAutomataValue, 1);
+	DrawGrid(src3, dataGrid);
+
+	float segregationSegmentsCounter = 0;
+	float segregationValueSum = 0;
+
+	for (int i = 0; i < dataGrid.size(); i++) {
+		for (int j = 0; j < dataGrid[i].size(); j++) {
+			if (dataGrid[i][j].automatonActive) {
+				segregationSegmentsCounter++;
+				segregationValueSum += dataGrid[i][j].value;
+			}
 		}
 	}
+
+	double segregationSize = segregationSegmentsCounter / (dataGrid.size() * dataGrid[0].size());
+	double proportionValue = (outerRingMeanColor - (segregationValueSum / segregationSegmentsCounter)) / (highestColor - lowestColor);
+
+	std::cout << "Segregation size: " << segregationSegmentsCounter / (dataGrid.size() * dataGrid[0].size()) << "%" << endl;
+	std::cout << "Segregation mean value: " << segregationValueSum / segregationSegmentsCounter << endl; 
+
+	ShowImage(src3, "Wynik3");
+
+	FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
+	fuzzy.CalculateSegregationClass(segregationSize, proportionValue);
+	
+
+	if (writeToFile) {
+		ofstream resultFile;
+		resultFile.open("results.csv", std::ios::app);
+		//Mean color
+		resultFile << outerRingMeanColor << ';';
+		//Highest color
+		resultFile << highestColor << ';';
+		//Lowest color
+		resultFile << lowestColor << ';';
+		//segregation size %
+		resultFile << segregationSize << ';';
+		// segregation mean value
+		resultFile << segregationValueSum / segregationSegmentsCounter << ';';
+		resultFile << endl;
+
+		resultFile.close();
+	}
+
+	waitKey(0);
+}
+
+int main()
+{
+
+	mainCalcFunction(4, false);
+	
+	//for (int i = 8; i < 61; i++) {
+	//	mainCalcFunction(i, true);
+	//}
+
+	//int k, l;
+	//Scalar color = Scalar(250, 250, 200);
+	//k = 24;
+	//l = 2373;
+	//rectangle(src, Point(dataGrid[k][l].x, dataGrid[k][l].y), Point(dataGrid[k][l].x + dataGrid[k][l].xSpan, dataGrid[k][l].y + dataGrid[k][l].ySpan), color, CV_FILLED, 8, 0);
+	//k = 25;
+	//l = 2373;
+	//rectangle(src, Point(dataGrid[k][l].x, dataGrid[k][l].y), Point(dataGrid[k][l].x + dataGrid[k][l].xSpan, dataGrid[k][l].y + dataGrid[k][l].ySpan), color, CV_FILLED, 8, 0);
+	//k = 26;
+	//l = 2373;
+	//rectangle(src, Point(dataGrid[k][l].x, dataGrid[k][l].y), Point(dataGrid[k][l].x + dataGrid[k][l].xSpan, dataGrid[k][l].y + dataGrid[k][l].ySpan), color, CV_FILLED, 8, 0);
+	//k = 27;
+	//l = 2373;
+	//rectangle(src, Point(dataGrid[k][l].x, dataGrid[k][l].y), Point(dataGrid[k][l].x + dataGrid[k][l].xSpan, dataGrid[k][l].y + dataGrid[k][l].ySpan), color, CV_FILLED, 8, 0);
 
 	//cvtColor(cropped, cropped, CV_BGR2GRAY);
 
@@ -411,7 +539,9 @@ int main()
 
 	//END							////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	ShowImage(src, "Wynik");
+	//ShowImage(src, "Wynik");
+	//ShowImage(src2, "Wynik2");
+	//ShowImage(src3, "Wynik3");
 
 	std::cout << "Finished!\n";
 

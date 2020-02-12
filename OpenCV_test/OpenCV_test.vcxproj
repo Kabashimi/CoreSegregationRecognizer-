@@ -154,9 +154,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Automaton.h" />
+    <ClInclude Include="Cell.h" />
+    <ClInclude Include="FuzzyMachine.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Automaton.cpp" />
+    <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="FuzzyMachine.cpp" />
     <ClCompile Include="OpenCV_test.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
