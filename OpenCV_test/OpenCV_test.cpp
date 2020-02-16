@@ -488,11 +488,11 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 int main()
 {
 
-	mainCalcFunction(4, false);
+	mainCalcFunction(53, false);
 	
-	//for (int i = 8; i < 61; i++) {
-	//	mainCalcFunction(i, true);
-	//}
+	/*for (int i = 8; i < 62; i++) {
+		mainCalcFunction(i, true);
+	}*/
 
 	//int k, l;
 	//Scalar color = Scalar(250, 250, 200);
