@@ -64,25 +64,35 @@ Vec3f CircleDetector::DetectCircle()
 	R.x = ((pow(A.x, 2) + pow(A.y, 2))*(B.y - C.y) + (pow(B.x, 2) + pow(B.y, 2))*(C.y - A.y) + (pow(C.x, 2) + pow(C.y, 2))*(A.y - B.y))/U;
 	R.x = ((pow(A.x, 2) + pow(A.y, 2))*(B.x - C.x) + (pow(B.x, 2) + pow(B.y, 2))*(C.x - A.x) + (pow(C.x, 2) + pow(C.y, 2))*(A.x - B.x))/U;
 
-	float radius = 
+	float radius =
 
 
 	return mainCircle;
 }
 
-Point CircleDetector::GetEdgePoint(Point startPoint, Vec2f direcction)
+Point CircleDetector::GetEdgePoint(Point startPoint, Vec2f direction)
 {
-	float searchStep = 10;
+	int streakCounter = 0;
+	int streakAccept = 100;
+	float searchStep = 1;
 	Point edgePoint;
 	Point edgeCandidate;
 	edgePoint = startPoint;
 	edgeCandidate = startPoint;
 
-	while (src.at<float>(edgeCandidate) > tresholdColor)
+	while (streakCounter < streakAccept)
 	{
 		startPoint = edgeCandidate;
-		edgeCandidate.x += direcction[1] * searchStep;
-		edgeCandidate.y += direcction[0] * searchStep;
+		edgeCandidate.x += direction[1] * searchStep;
+		edgeCandidate.y += direction[0] * searchStep;
+		if(src.at<float>(edgeCandidate) < tresholdColor)
+		{
+			streakCounter++;
+		}
+		else
+		{
+				streakCounter = 0;
+		}
 	}
 
 	return edgePoint;
