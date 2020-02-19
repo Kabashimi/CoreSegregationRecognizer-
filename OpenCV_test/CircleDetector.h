@@ -2,6 +2,7 @@
 #include <opencv2/core/core.hpp>
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
+#include <math.h>
 
 using namespace cv;
 
@@ -19,4 +20,3 @@ private:
 	Vec3f DetectCircle();
 	Point GetEdgePoint(Point, Vec2f);
 };
-

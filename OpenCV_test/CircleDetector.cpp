@@ -55,6 +55,7 @@ Vec3f CircleDetector::DetectCircle()
 
 	float AB = norm((B.y - A.y) / (B.x - A.x));
 	float BC = norm((C.y - B.y) / (C.x - B.x));
+	float CA = norm((C.y - A.y) / (C.x - A.x));
 	float CD = norm((D.y - C.y) / (D.x - C.x));
 	float DA = norm((A.y - D.y) / (A.x - C.x));
 
@@ -64,7 +65,12 @@ Vec3f CircleDetector::DetectCircle()
 	R.x = ((pow(A.x, 2) + pow(A.y, 2))*(B.y - C.y) + (pow(B.x, 2) + pow(B.y, 2))*(C.y - A.y) + (pow(C.x, 2) + pow(C.y, 2))*(A.y - B.y))/U;
 	R.x = ((pow(A.x, 2) + pow(A.y, 2))*(B.x - C.x) + (pow(B.x, 2) + pow(B.y, 2))*(C.x - A.x) + (pow(C.x, 2) + pow(C.y, 2))*(A.x - B.x))/U;
 
-	float radius =
+
+	//calculate radius without choosing bigges triangle (lets use ABC)
+
+	float halfPerimeter = (AB+BC+CA)/2
+	float innerCircleRadius = sqrt(( (halfPerimeter-AB)*(halfPerimeter-BC)*(halfPerimeter-CA) )/halfPerimeter);
+	float radius = (AB*BC*CA)/(4*innerCircleRadius*halfPerimeter);
 
 
 	return mainCircle;
