@@ -312,7 +312,10 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 	hist = DrawHistogram(src_gray);
 
 	//Detect circle
-	Vec3f biggestCircle = DetectCircle(src_gray, hist);
+	//Vec3f biggestCircle = DetectCircle(src_gray, hist);
+
+	CircleDetector circleDetector(src_gray, hist);
+	Vec3f biggestCircle = circleDetector.DetectCircle();
 	//Vec3f biggestCircle = DetectCircle(src_gray);
 
 	///// Draw the circles detected
@@ -456,13 +459,13 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 	double proportionValue = (outerRingMeanColor - (segregationValueSum / segregationSegmentsCounter)) / (highestColor - lowestColor);
 
 	std::cout << "Segregation size: " << segregationSegmentsCounter / (dataGrid.size() * dataGrid[0].size()) << "%" << endl;
-	std::cout << "Segregation mean value: " << segregationValueSum / segregationSegmentsCounter << endl; 
+	std::cout << "Segregation mean value: " << segregationValueSum / segregationSegmentsCounter << endl;
 
 	ShowImage(src3, "Wynik3");
 
 	FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
 	fuzzy.CalculateSegregationClass(segregationSize, proportionValue);
-	
+
 
 	if (writeToFile) {
 		ofstream resultFile;
@@ -489,7 +492,7 @@ int main()
 {
 
 	mainCalcFunction(53, false);
-	
+
 	/*for (int i = 8; i < 62; i++) {
 		mainCalcFunction(i, true);
 	}*/
