@@ -68,7 +68,7 @@ Vec3f CircleDetector::DetectCircle()
 
 	//calculate radius without choosing bigges triangle (lets use ABC)
 
-	float halfPerimeter = (AB+BC+CA)/2
+	float halfPerimeter = (AB + BC + CA) / 2;
 	float innerCircleRadius = sqrt(( (halfPerimeter-AB)*(halfPerimeter-BC)*(halfPerimeter-CA) )/halfPerimeter);
 	float radius = (AB*BC*CA)/(4*innerCircleRadius*halfPerimeter);
 
