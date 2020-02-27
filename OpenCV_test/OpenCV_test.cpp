@@ -263,6 +263,7 @@ float CalcAvgColor(Mat src, float x, float y, float sx, float sy) {
 
 		}
 	}
+
 	return sum / pixelsNumber;
 }
 
@@ -315,8 +316,9 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 	//Vec3f biggestCircle = DetectCircle(src_gray, hist);
 
 	CircleDetector circleDetector(src_gray, hist);
+	//Vec3f biggestCircle2 = DetectCircle(src_gray);
 	Vec3f biggestCircle = circleDetector.DetectCircle();
-	//Vec3f biggestCircle = DetectCircle(src_gray);
+	
 
 	///// Draw the circles detected
 	std::cout << "Drawing circle: ";

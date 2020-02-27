@@ -157,6 +157,7 @@
     <ClInclude Include="Automaton.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CircleDetector.h" />
+    <ClInclude Include="FuzzyDataLoader.h" />
     <ClInclude Include="FuzzyMachine.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
@@ -164,6 +165,7 @@
     <ClCompile Include="Automaton.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CircleDetector.cpp" />
+    <ClCompile Include="FuzzyDataLoader.cpp" />
     <ClCompile Include="FuzzyMachine.cpp" />
     <ClCompile Include="OpenCV_test.cpp" />
     <ClCompile Include="pch.cpp">

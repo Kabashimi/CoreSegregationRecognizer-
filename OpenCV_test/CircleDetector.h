@@ -11,12 +11,13 @@ class CircleDetector
 public:
 	CircleDetector(Mat, Mat);
 	~CircleDetector();
+	Vec3f DetectCircle();
 
 private:
 	Mat src;
 	Mat hist;
 	int tresholdColor;
 
-	Vec3f DetectCircle();
+	float LineLenght(Point, Point);
 	Point GetEdgePoint(Point, Vec2f);
 };
