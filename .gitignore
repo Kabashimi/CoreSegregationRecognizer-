@@ -31,6 +31,8 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+.vs/
+
 # Images of segregations
-OpenCV_test/images/*
-OpenCV_test/new_images/*
+Core Segregation Detector/images/*
+Core Segregation Detector/new_images/*
