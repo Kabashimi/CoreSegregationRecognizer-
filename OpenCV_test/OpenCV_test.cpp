@@ -60,7 +60,7 @@ Mat DrawHistogram(Mat src_gray) {
 	/// Draw for each channel
 	for (int i = 1; i < histSize; i++)
 	{
-		//std::cout << "value = " << hist.at<float>(i) << endl;
+		std::cout << "value = " << hist.at<float>(i) << endl;
 		line(histImage, Point(bin_w*(i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
 			Point(bin_w*(i), hist_h - cvRound(hist.at<float>(i))),
 			Scalar(255, 0, 0), 2, 8, 0);
@@ -68,8 +68,8 @@ Mat DrawHistogram(Mat src_gray) {
 	std::cout << "SUCCESS\n";
 
 	/// Display
-	//namedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE);
-	//imshow("calcHist Demo", histImage);
+	namedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE);
+	imshow("calcHist Demo", histImage);
 	return hist;
 }
 
@@ -297,7 +297,8 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 	std::cout << endl << endl;
 	std::cout << "Open image: " << photoNumber << endl;
 	//Load image
-	String photoName = "images/";
+	String photoName = "new_images/2-";
+	//String photoName = "images/";
 	photoName += std::to_string(photoNumber);
 	photoName += ".jpg";
 	Mat src = LoadImage(photoName);
@@ -311,7 +312,7 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 
 	// Prepare histogram
 	hist = DrawHistogram(src_gray);
-
+	
 	//Detect circle
 	//Vec3f biggestCircle = DetectCircle(src_gray, hist);
 
@@ -363,7 +364,7 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 			}
 			else if (distanceToCenter > meanRange)
 			{
-				/*rectangle(src, Point(x, y), Point(x + sx, y + sy), Scalar(200, 200, 0), CV_FILLED, 8, 0);*/
+				//rectangle(src, Point(x, y), Point(x + sx, y + sy), Scalar(200, 200, 0), CV_FILLED, 8, 0);
 				outerRingColorSum += CalcAvgColor(src_gray, x, y, sx, sy);
 				outerRingSegmentsCounter++;
 			}
@@ -482,6 +483,8 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 		resultFile << segregationSize << ';';
 		// segregation mean value
 		resultFile << segregationValueSum / segregationSegmentsCounter << ';';
+		//proportion value
+		resultFile << proportionValue << ';';
 		resultFile << endl;
 
 		resultFile.close();
@@ -490,12 +493,36 @@ void mainCalcFunction(int photoNumber, bool writeToFile) {
 	waitKey(0);
 }
 
+void HistFunction(int photoNumber, bool writeToFile) {
+
+	std::cout << endl << endl;
+	std::cout << "Open image: " << photoNumber << endl;
+	//Load image
+	//String photoName = "new_images/1-";
+	String photoName = "images/";
+	photoName += std::to_string(photoNumber);
+	photoName += ".jpg";
+	Mat src = LoadImage(photoName);
+	Mat src_gray;
+	Mat hist;
+
+	/// Convert it to gray
+	std::cout << "Convert to gray: ";
+	cvtColor(src, src_gray, CV_BGR2GRAY);
+	std::cout << "SUCCESS\n";
+
+	// Prepare histogram
+	hist = DrawHistogram(src_gray);
+	waitKey(0);
+}
+
 int main()
 {
 
-	mainCalcFunction(53, false);
+	mainCalcFunction(1, false);
+	//HistFunction(1, false);
 
-	/*for (int i = 8; i < 62; i++) {
+	/*for (int i = 1; i < 16; i++) {
 		mainCalcFunction(i, true);
 	}*/
 

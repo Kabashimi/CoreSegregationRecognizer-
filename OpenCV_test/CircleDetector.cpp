@@ -2,17 +2,44 @@
 #include "CircleDetector.h"
 
 
+
 CircleDetector::CircleDetector(Mat src, Mat hist)
 {
 	float prevValue = 0;
 	float value;
 	bool passedMaximum = false;
 	int minimum;
+	std::vector<float> meanHist;
+
+	for (int i = 0; i < 250; i+=5) {
+		float meanHistSum = hist.at<float>(i);
+		meanHistSum += hist.at<float>(i + 1);
+		meanHistSum += hist.at<float>(i + 2);
+		meanHistSum += hist.at<float>(i + 3);
+		meanHistSum += hist.at<float>(i + 4);
+		meanHist.push_back(meanHistSum / 5);
+	}
 
 	//find edge color value - between circle and outer space
-	for (int i = 0; i < 256; i++) {
-		value = hist.at<float>(i);
-		//std::cout << "v:" << value << endl;
+	//for (int i = 0; i < 256; i++) {
+	//	value = hist.at<float>(i);
+	//	//std::cout << "v:" << value << std::endl;
+	//	if (prevValue > value) {
+	//		passedMaximum = true;
+	//	}
+	//	if (passedMaximum) {
+	//		if (prevValue < value) {
+	//			minimum = i;
+	//			break;
+	//		}
+	//	}
+	//	prevValue = value;
+	//}
+
+	for (int i = 0; i < 50; i++) {
+		//value = hist.at<float>(i);
+		value = meanHist[i];
+		//std::cout << "v:" << value << std::endl;
 		if (prevValue > value) {
 			passedMaximum = true;
 		}
@@ -25,9 +52,10 @@ CircleDetector::CircleDetector(Mat src, Mat hist)
 		prevValue = value;
 	}
 
+
 	this->src = src;
 	this->hist = hist;
-	tresholdColor = minimum;
+	tresholdColor = minimum*5;
 }
 
 
@@ -63,15 +91,15 @@ Vec3f CircleDetector::DetectCircle()
 	//Get circle center coordinates
 	float U = 2 * (A.x*(B.y - C.y) + B.x*(C.y - A.y) + C.x*(A.y - B.y));
 	Point R;
-	R.x = ((pow(A.x, 2) + pow(A.y, 2))*(B.y - C.y) + (pow(B.x, 2) + pow(B.y, 2))*(C.y - A.y) + (pow(C.x, 2) + pow(C.y, 2))*(A.y - B.y))/U;
-	R.y = ((pow(A.x, 2) + pow(A.y, 2))*(C.x - B.x) + (pow(B.x, 2) + pow(B.y, 2))*(A.x - C.x) + (pow(C.x, 2) + pow(C.y, 2))*(B.x - A.x))/U;
+	R.x = ((pow(A.x, 2) + pow(A.y, 2))*(B.y - C.y) + (pow(B.x, 2) + pow(B.y, 2))*(C.y - A.y) + (pow(C.x, 2) + pow(C.y, 2))*(A.y - B.y)) / U;
+	R.y = ((pow(A.x, 2) + pow(A.y, 2))*(C.x - B.x) + (pow(B.x, 2) + pow(B.y, 2))*(A.x - C.x) + (pow(C.x, 2) + pow(C.y, 2))*(B.x - A.x)) / U;
 
 
 	//calculate radius without choosing bigges triangle (lets use ABC)
 
 	float halfPerimeter = (AB + BC + CA) / 2;
-	float innerCircleRadius = sqrt(( (halfPerimeter-AB)*(halfPerimeter-BC)*(halfPerimeter-CA) )/halfPerimeter);
-	float radius = (AB*BC*CA)/(4*innerCircleRadius*halfPerimeter);
+	float innerCircleRadius = sqrt(((halfPerimeter - AB)*(halfPerimeter - BC)*(halfPerimeter - CA)) / halfPerimeter);
+	float radius = (AB*BC*CA) / (4 * innerCircleRadius*halfPerimeter);
 
 	mainCircle[0] = R.x;
 	mainCircle[1] = R.y;
@@ -81,7 +109,7 @@ Vec3f CircleDetector::DetectCircle()
 
 float CircleDetector::LineLenght(Point A, Point B)
 {
-	return sqrt(pow(B.x-A.x,2)+pow(B.y-A.y,2));
+	return sqrt(pow(B.x - A.x, 2) + pow(B.y - A.y, 2));
 }
 
 Point CircleDetector::GetEdgePoint(Point startPoint, Vec2f direction)
@@ -107,11 +135,11 @@ Point CircleDetector::GetEdgePoint(Point startPoint, Vec2f direction)
 				edgePoint = edgeCandidate;
 				break;
 			}
-		
+
 		}
 		else
 		{
-				streakCounter = 0;
+			streakCounter = 0;
 		}
 	}
 

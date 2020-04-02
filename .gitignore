@@ -33,3 +33,4 @@ bld/
 
 # Images of segregations
 OpenCV_test/images/*
+OpenCV_test/new_images/*
