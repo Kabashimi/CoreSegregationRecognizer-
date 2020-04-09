@@ -10,11 +10,13 @@ using namespace System::Collections::Generic;
 ref class Automata
 {
 public:
-	Automata(List<List<Cell^>^>^ dataGrid);
+	Automata(List<List<Cell^>^>^ dataGrid, float);
 	~Automata();
 	List<List<Cell^>^>^ runNaiveEvolution(int tresholdValue, int neighboursNumber);
+	int outerRingActiveCellsNumber;
 
 private:
+	float meanRange;
 	List<List<Cell^>^>^ dataGrid;
 	List<List<Cell^>^>^ newDataGrid;
 	List<Cell^>^ getVonNeumannNeighbours(int x, int y);

@@ -56,6 +56,16 @@ namespace CoreSegregationDetector {
 	private: System::Windows::Forms::PictureBox^  pictureBox2;
 	private: System::Windows::Forms::Timer^  timer1;
 	private: System::Windows::Forms::Label^  loadingLabel;
+	private: System::Windows::Forms::Label^  calculationsLabel;
+	private: System::Windows::Forms::GroupBox^  groupBox1;
+	private: System::Windows::Forms::Label^  segregationIntensityLabel;
+	private: System::Windows::Forms::Label^  segregationSizeLable;
+	private: System::Windows::Forms::GroupBox^  groupBox2;
+	private: System::Windows::Forms::Label^  minimalColorLabel;
+	private: System::Windows::Forms::Label^  outerMeanColorLabel;
+	private: System::Windows::Forms::Label^  maximalColorLabel;
+	private: System::Windows::Forms::Label^  segregationColorValueLabel;
+
 
 	private: System::ComponentModel::IContainer^  components;
 			 /// </summary>
@@ -74,8 +84,19 @@ namespace CoreSegregationDetector {
 			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->loadingLabel = (gcnew System::Windows::Forms::Label());
+			this->calculationsLabel = (gcnew System::Windows::Forms::Label());
+			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->segregationIntensityLabel = (gcnew System::Windows::Forms::Label());
+			this->segregationSizeLable = (gcnew System::Windows::Forms::Label());
+			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->outerMeanColorLabel = (gcnew System::Windows::Forms::Label());
+			this->maximalColorLabel = (gcnew System::Windows::Forms::Label());
+			this->minimalColorLabel = (gcnew System::Windows::Forms::Label());
+			this->segregationColorValueLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
+			this->groupBox1->SuspendLayout();
+			this->groupBox2->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// openFileButton
@@ -122,11 +143,103 @@ namespace CoreSegregationDetector {
 			this->loadingLabel->Text = L"Loading Data...";
 			this->loadingLabel->Visible = false;
 			// 
+			// calculationsLabel
+			// 
+			this->calculationsLabel->AutoSize = true;
+			this->calculationsLabel->Location = System::Drawing::Point(93, 17);
+			this->calculationsLabel->Name = L"calculationsLabel";
+			this->calculationsLabel->Size = System::Drawing::Size(126, 13);
+			this->calculationsLabel->TabIndex = 4;
+			this->calculationsLabel->Text = L"Performing Calculations...";
+			this->calculationsLabel->Visible = false;
+			// 
+			// groupBox1
+			// 
+			this->groupBox1->Controls->Add(this->segregationIntensityLabel);
+			this->groupBox1->Controls->Add(this->segregationSizeLable);
+			this->groupBox1->Location = System::Drawing::Point(219, 688);
+			this->groupBox1->Name = L"groupBox1";
+			this->groupBox1->Size = System::Drawing::Size(200, 100);
+			this->groupBox1->TabIndex = 5;
+			this->groupBox1->TabStop = false;
+			this->groupBox1->Text = L"Measured segregation";
+			// 
+			// segregationIntensityLabel
+			// 
+			this->segregationIntensityLabel->AutoSize = true;
+			this->segregationIntensityLabel->Location = System::Drawing::Point(7, 33);
+			this->segregationIntensityLabel->Name = L"segregationIntensityLabel";
+			this->segregationIntensityLabel->Size = System::Drawing::Size(16, 13);
+			this->segregationIntensityLabel->TabIndex = 1;
+			this->segregationIntensityLabel->Text = L"   ";
+			// 
+			// segregationSizeLable
+			// 
+			this->segregationSizeLable->AutoSize = true;
+			this->segregationSizeLable->Location = System::Drawing::Point(7, 20);
+			this->segregationSizeLable->Name = L"segregationSizeLable";
+			this->segregationSizeLable->Size = System::Drawing::Size(16, 13);
+			this->segregationSizeLable->TabIndex = 0;
+			this->segregationSizeLable->Text = L"   ";
+			this->segregationSizeLable->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+			// 
+			// groupBox2
+			// 
+			this->groupBox2->Controls->Add(this->segregationColorValueLabel);
+			this->groupBox2->Controls->Add(this->outerMeanColorLabel);
+			this->groupBox2->Controls->Add(this->maximalColorLabel);
+			this->groupBox2->Controls->Add(this->minimalColorLabel);
+			this->groupBox2->Location = System::Drawing::Point(13, 688);
+			this->groupBox2->Name = L"groupBox2";
+			this->groupBox2->Size = System::Drawing::Size(200, 100);
+			this->groupBox2->TabIndex = 6;
+			this->groupBox2->TabStop = false;
+			this->groupBox2->Text = L"Image parameters";
+			// 
+			// outerMeanColorLabel
+			// 
+			this->outerMeanColorLabel->AutoSize = true;
+			this->outerMeanColorLabel->Location = System::Drawing::Point(6, 42);
+			this->outerMeanColorLabel->Name = L"outerMeanColorLabel";
+			this->outerMeanColorLabel->Size = System::Drawing::Size(114, 13);
+			this->outerMeanColorLabel->TabIndex = 2;
+			this->outerMeanColorLabel->Text = L"Outer ring mean color: ";
+			// 
+			// maximalColorLabel
+			// 
+			this->maximalColorLabel->AutoSize = true;
+			this->maximalColorLabel->Location = System::Drawing::Point(6, 29);
+			this->maximalColorLabel->Name = L"maximalColorLabel";
+			this->maximalColorLabel->Size = System::Drawing::Size(77, 13);
+			this->maximalColorLabel->TabIndex = 1;
+			this->maximalColorLabel->Text = L"Maximal color: ";
+			// 
+			// minimalColorLabel
+			// 
+			this->minimalColorLabel->AutoSize = true;
+			this->minimalColorLabel->Location = System::Drawing::Point(6, 16);
+			this->minimalColorLabel->Name = L"minimalColorLabel";
+			this->minimalColorLabel->Size = System::Drawing::Size(74, 13);
+			this->minimalColorLabel->TabIndex = 0;
+			this->minimalColorLabel->Text = L"Minimal color: ";
+			// 
+			// segregationColorValueLabel
+			// 
+			this->segregationColorValueLabel->AutoSize = true;
+			this->segregationColorValueLabel->Location = System::Drawing::Point(6, 55);
+			this->segregationColorValueLabel->Name = L"segregationColorValueLabel";
+			this->segregationColorValueLabel->Size = System::Drawing::Size(136, 13);
+			this->segregationColorValueLabel->TabIndex = 3;
+			this->segregationColorValueLabel->Text = L"Segregation treshold color: ";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1735, 813);
+			this->Controls->Add(this->groupBox2);
+			this->Controls->Add(this->groupBox1);
+			this->Controls->Add(this->calculationsLabel);
 			this->Controls->Add(this->loadingLabel);
 			this->Controls->Add(this->pictureBox2);
 			this->Controls->Add(this->pictureBox1);
@@ -135,6 +248,10 @@ namespace CoreSegregationDetector {
 			this->Text = L"MyForm";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
+			this->groupBox1->ResumeLayout(false);
+			this->groupBox1->PerformLayout();
+			this->groupBox2->ResumeLayout(false);
+			this->groupBox2->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -175,14 +292,24 @@ namespace CoreSegregationDetector {
 	private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
 		if (mainEngine->originalImageReady) {
 			pictureBox1->Image = mainEngine->originalImage;
+			loadingLabel->Visible = false;
+			calculationsLabel->Visible = true;
 		}
 		if (mainEngine->editedImageReady) {
 			pictureBox2->Image = mainEngine->editedImage;
 		}
 		if (mainEngine->calculationsReady) {
 			timer1->Enabled = false;
-			loadingLabel->Visible = false;
+			calculationsLabel->Visible = false;
 			//wypisz wyniki
+			segregationSizeLable->Text = "Segregation Size: " + mainEngine->getSegregationSize()*100 + "%";
+			segregationIntensityLabel->Text = "Segregation Intensity: " + mainEngine->getSegregationIntensity();
+
+			minimalColorLabel->Text = "Minimal color: " + mainEngine->getMinimalColorValue();
+			maximalColorLabel->Text = "Maximal color: " + mainEngine->getMaximalColorValue();
+			outerMeanColorLabel->Text = "Outer ring mean color:  " + mainEngine->getOuterRingMeanValue();
+			segregationColorValueLabel->Text = "Segregation treshold color: " + mainEngine->getSegregationTresholdColorValue();
+
 		}
 	}
 };

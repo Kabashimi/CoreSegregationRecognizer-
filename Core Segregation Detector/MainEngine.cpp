@@ -9,6 +9,10 @@ MainEngine::MainEngine()
 	originalImageReady = false;
 	editedImageReady = false;
 	calculationsReady = false;
+	segregationSize = 0.0;
+	segregationIntensity = 0.0;
+	outerRingMeanColor = 0.0;
+	segregationTresholdColor = 0;
 }
 
 MainEngine::MainEngine(System::String^ path)
@@ -19,19 +23,23 @@ MainEngine::MainEngine(System::String^ path)
 	originalImageReady = false;
 	editedImageReady = false;
 	calculationsReady = false;
+	segregationSize = 0.0;
+	segregationIntensity = 0.0;
+	outerRingMeanColor = 0.0;
+	segregationTresholdColor = 0;
 }
 
 
 
 void MainEngine::RunCalculation()
 {
-	
+
 	//load image
 	ImageUtility^ imgUtility = gcnew ImageUtility();
 	System::String^ tmpPath = filePath;
 	std::string path = msclr::interop::marshal_as<std::string>(tmpPath);
 	cv::Mat src = imgUtility->ImageLoad(path);
-	
+
 	originalImage = imgUtility->DrawBitmap(src);
 	originalImageReady = true;
 
@@ -43,7 +51,7 @@ void MainEngine::RunCalculation()
 
 	// Prepare histogram
 	hist = DrawHistogram(src_gray);
-	
+
 	CircleDetector circleDetector(src_gray, hist);
 	//Vec3f biggestCircle2 = DetectCircle(src_gray);
 	cv::Vec3f biggestCircle = circleDetector.DetectCircle();
@@ -74,8 +82,8 @@ void MainEngine::RunCalculation()
 	int outerRingColorSum = 0;
 	int outerRingSegmentsCounter = 0;
 
-	int highestColor = 0;
-	int lowestColor = 255;
+	highestColor = 0;
+	lowestColor = 255;
 
 	for (float x = x0; x < limx; x += sx) {
 		for (float y = y0; y < limy; y += sy) {
@@ -104,7 +112,7 @@ void MainEngine::RunCalculation()
 		}
 	}
 
-	float outerRingMeanColor = outerRingColorSum / outerRingSegmentsCounter;
+	outerRingMeanColor = outerRingColorSum / outerRingSegmentsCounter;
 	//std::cout << "Mean color: " << outerRingMeanColor << endl;
 	//std::cout << "Highest color: " << highestColor << endl;
 	//std::cout << "Lowest color: " << lowestColor << endl;
@@ -113,7 +121,8 @@ void MainEngine::RunCalculation()
 	//std::vector<std::vector<Cell> > dataGrid;
 	List<List<Cell^>^>^ dataGrid = gcnew List<List<Cell^>^>;
 	List<Cell^>^ tmpDataRow = gcnew List<Cell^>;
-
+	int circleSegmentsNumber = 0;
+	int outerRingCellsNumber = 0;
 
 	for (float x = x0; x < limx; x += sx) {
 
@@ -125,19 +134,16 @@ void MainEngine::RunCalculation()
 			tmpCell->ySpan = sy;
 			segmentCenterX = x + sx / 2;
 			segmentCenterY = y + sy / 2;
-			distanceToCenter = CalcDistance(circleCenter.x, circleCenter.y, segmentCenterX, segmentCenterY);
-			if (distanceToCenter > excludeRange) {
+			tmpCell->distanceToCenter = CalcDistance(circleCenter.x, circleCenter.y, segmentCenterX, segmentCenterY);
+			if (tmpCell->distanceToCenter > excludeRange) {
 				//tmpDataRow.push_back(tmpCell);
 				tmpDataRow->Add(tmpCell);
 				continue;
 			}
-			else if (distanceToCenter > meanRange)
-			{
-
-				rectangle(src, cv::Point(x, y), cv::Point(x + sx, y + sy), cv::Scalar(outerRingMeanColor, outerRingMeanColor, outerRingMeanColor), CV_FILLED, 8, 0);
-			}
 			else
 			{
+
+				circleSegmentsNumber++;
 				int avgColor = CalcAvgColor(src_gray, x, y, sx, sy);
 				tmpCell->value = avgColor;
 				tmpCell->active = true;
@@ -153,6 +159,12 @@ void MainEngine::RunCalculation()
 				else {
 					rectangle(src, cv::Point(x, y), cv::Point(x + sx, y + sy), cv::Scalar(avgColor, avgColor, avgColor), CV_FILLED, 8, 0);
 				}
+				if (tmpCell->distanceToCenter > meanRange)
+				{
+					//circleSegmentsNumber++;
+					outerRingCellsNumber++;
+					rectangle(src, cv::Point(x, y), cv::Point(x + sx, y + sy), cv::Scalar(outerRingMeanColor, outerRingMeanColor, outerRingMeanColor), CV_FILLED, 8, 0);
+				}
 
 			}
 			tmpDataRow->Add(tmpCell);
@@ -165,11 +177,32 @@ void MainEngine::RunCalculation()
 	DrawGrid(src2, dataGrid, outerRingMeanColor);
 
 	cv::Mat src3 = src.clone();
-	int tresholdAutomataValue = outerRingMeanColor - lowestToMeanColor * 0.3;
-	Automata automata(dataGrid);
-	dataGrid = automata.runNaiveEvolution(tresholdAutomataValue, 2);
-	dataGrid = automata.runNaiveEvolution(tresholdAutomataValue, 1);
+	double percent = 0.5;
+	int tresholdColor = (percent*(highestColor - lowestColor)) + lowestColor;
+	//int tresholdAutomataValue = outerRingMeanColor - lowestToMeanColor * 0.3;
+	Automata^ automata = gcnew Automata(dataGrid, meanRange);
+	dataGrid = automata->runNaiveEvolution(tresholdColor, 2);
+	dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
+
+	List<List<Cell^>^>^ previousDataGrid = gcnew List<List<Cell^>^>;
+	cv::Mat previousSrc3 = src3.clone();
+
+	while (automata->outerRingActiveCellsNumber > 10)
+	{
+		previousDataGrid = dataGrid;
+		previousSrc3 = src3.clone();
+		cv::Mat src3 = src.clone();
+		percent -= 0.05;
+		tresholdColor = (percent*(highestColor - lowestColor)) + lowestColor;
+		automata = gcnew Automata(dataGrid, meanRange);
+		dataGrid = automata->runNaiveEvolution(tresholdColor, 2);
+		dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
+	}
+
+
 	DrawGrid(src3, dataGrid);
+
+
 
 	editedImage = imgUtility->DrawBitmap(src3);
 	editedImageReady = true;
@@ -187,20 +220,22 @@ void MainEngine::RunCalculation()
 		}
 	}
 
-	double segregationSize = segregationSegmentsCounter / (dataGrid->Count * dataGrid[0]->Count);
-	double proportionValue = (outerRingMeanColor - (segregationValueSum / segregationSegmentsCounter)) / (highestColor - lowestColor);
+	segregationTresholdColor = tresholdColor;
 
-	std::cout << "Segregation size: " << segregationSegmentsCounter / (dataGrid->Count * dataGrid[0]->Count) << "%" << std::endl;
+	segregationSize = segregationSegmentsCounter / circleSegmentsNumber;
+	segregationIntensity = (outerRingMeanColor - (segregationValueSum / segregationSegmentsCounter)) / (highestColor - lowestColor);
+
+	std::cout << "Segregation size: " << segregationSize << "%" << std::endl;
 	std::cout << "Segregation mean value: " << segregationValueSum / segregationSegmentsCounter << std::endl;
 
 	//ShowImage(src3, "Wynik3");
 
 	FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
-	fuzzy.CalculateSegregationClass(segregationSize, proportionValue);
+	fuzzy.CalculateSegregationClass(segregationSize, segregationIntensity);
 
 	calculationsReady = true;
 
-	
+
 
 	/*cv::namedWindow("Wynik 3", CV_WINDOW_AUTOSIZE);
 	imshow("Wynik 3", src3);*/
@@ -211,6 +246,36 @@ void MainEngine::RunCalculation()
 void MainEngine::SetPath(System::String^ path)
 {
 	filePath = gcnew System::String(path);
+}
+
+double MainEngine::getSegregationSize()
+{
+	return ceil(segregationSize*10000.0) / 10000.0;
+}
+
+double MainEngine::getSegregationIntensity()
+{
+	return ceil(segregationIntensity*10000.0) / 10000.0;
+}
+
+int MainEngine::getMinimalColorValue()
+{
+	return lowestColor;
+}
+
+int MainEngine::getMaximalColorValue()
+{
+	return highestColor;
+}
+
+double MainEngine::getOuterRingMeanValue()
+{
+	return ceil(outerRingMeanColor*10000.0) / 10000.0;
+}
+
+int MainEngine::getSegregationTresholdColorValue()
+{
+	return segregationTresholdColor;
 }
 
 cv::Mat MainEngine::DrawHistogram(cv::Mat src_gray)

@@ -11,5 +11,8 @@ public:
 	float value;
 	bool active;
 	bool automatonActive;
+	double distanceToCenter;
+
+	void setDistanceToCenter(double);
 };
 

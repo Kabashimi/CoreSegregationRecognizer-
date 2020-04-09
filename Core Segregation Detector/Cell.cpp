@@ -12,3 +12,8 @@ Cell::Cell()
 Cell::~Cell()
 {
 }
+
+void Cell::setDistanceToCenter(double distanceTocenter)
+{
+	this->distanceToCenter = distanceTocenter;
+}

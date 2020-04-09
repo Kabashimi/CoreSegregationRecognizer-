@@ -31,6 +31,12 @@ public:
 	Boolean originalImageReady;
 	Boolean editedImageReady;
 	Boolean calculationsReady;
+	double getSegregationSize();
+	double getSegregationIntensity();
+	int getMinimalColorValue();
+	int getMaximalColorValue();
+	double getOuterRingMeanValue();
+	int getSegregationTresholdColorValue();
 private:
 	cv::Mat DrawHistogram(cv::Mat);
 	void DrawCircle(cv::Mat, cv::Vec3f);
@@ -38,5 +44,11 @@ private:
 	float CalcAvgColor(cv::Mat, float, float, float, float);
 	void DrawGrid(cv::Mat, List<List<Cell^>^>^, float);
 	void DrawGrid(cv::Mat, List<List<Cell^>^>^);
+	double segregationSize;
+	double segregationIntensity;
+	float outerRingMeanColor;
+	int highestColor;
+	int lowestColor;
+	int segregationTresholdColor;
 };
 

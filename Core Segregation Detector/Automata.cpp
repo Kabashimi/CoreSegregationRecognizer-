@@ -2,10 +2,12 @@
 #include "Automata.h"
 
 
-Automata::Automata(List<List<Cell^>^>^ dataGrid)
+Automata::Automata(List<List<Cell^>^>^ dataGrid, float meanRange)
 {
 	this->dataGrid = dataGrid;
 	newDataGrid = dataGrid;
+	outerRingActiveCellsNumber = -1;
+	this->meanRange = meanRange;
 }
 
 Automata::~Automata()
@@ -16,6 +18,7 @@ List<List<Cell^>^>^ Automata::runNaiveEvolution(int tresholdValue, int neighbour
 {
 	List<Cell^>^ tmpNeighbours;
 	int tmpCount = 0;
+	outerRingActiveCellsNumber = 0;
 	for (int i = 0; i < dataGrid->Count; i++) {
 		List<Cell^>^ datagridRow = dataGrid[i];
 		List<Cell^>^ newdatagridRow = newDataGrid[i];
@@ -37,6 +40,9 @@ List<List<Cell^>^>^ Automata::runNaiveEvolution(int tresholdValue, int neighbour
 			}
 			if (tmpCount >= neighboursNumber) {
 				newdatagridRow[j]->automatonActive = true;
+				if (datagridRow[j]->distanceToCenter > meanRange) {
+					outerRingActiveCellsNumber++;
+				}
 			}
 			else {
 				newdatagridRow[j]->automatonActive = false;
