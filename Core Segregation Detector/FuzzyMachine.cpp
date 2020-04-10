@@ -1,6 +1,9 @@
 //#include "pch.h"
 #include "FuzzyMachine.h"
 #include <iostream>
+#include <fl/Headers.h>
+
+using namespace fl;
 
 
 FuzzyMachine::FuzzyMachine(double pStart, double pEnd, double sStart, double sEnd)
@@ -9,6 +12,10 @@ FuzzyMachine::FuzzyMachine(double pStart, double pEnd, double sStart, double sEn
 	this->pEnd = pEnd;
 	this->sStart = sStart;
 	this->sEnd = sEnd;
+
+	Engine* engine = new Engine;
+	engine->setName("Laundry");
+	engine->setDescription("");
 }
 
 

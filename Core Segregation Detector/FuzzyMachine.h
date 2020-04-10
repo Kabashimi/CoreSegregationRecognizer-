@@ -1,4 +1,8 @@
 #pragma once
+//#include <fl/Headers.h>
+
+//using namespace fl;
+
 ref class FuzzyMachine
 {
 public:
