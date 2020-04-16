@@ -232,10 +232,11 @@ void MainEngine::RunCalculation()
 
 	FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
 	//fuzzy.CalculateSegregationClass(segregationSize, segregationIntensity);
-	fuzzy.RunCalculation(segregationSize, segregationIntensity);
+	double calculatedSegregation = fuzzy.RunCalculation(segregationSize, segregationIntensity);
 
 	calculationsReady = true;
 
+	FileUtility::WriteResultToFile(segregationSize, segregationIntensity, calculatedSegregation);
 
 
 	/*cv::namedWindow("Wynik 3", CV_WINDOW_AUTOSIZE);

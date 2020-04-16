@@ -144,6 +144,7 @@
     <ClCompile Include="Automata.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CircleDetector.cpp" />
+    <ClCompile Include="FileUtility.cpp" />
     <ClCompile Include="FuzzyMachine.cpp" />
     <ClCompile Include="ImageUtility.cpp" />
     <ClCompile Include="MainEngine.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Automata.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CircleDetector.h" />
+    <ClInclude Include="FileUtility.h" />
     <ClInclude Include="FuzzyMachine.h" />
     <ClInclude Include="ImageUtility.h" />
     <ClInclude Include="MainEngine.h" />

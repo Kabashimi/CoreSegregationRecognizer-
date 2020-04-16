@@ -56,7 +56,7 @@ double FuzzyMachine::RunCalculation(double size, double intensity)
 	Segregation->setRange(1.000, 4.000);
 	Segregation->setLockValueInRange(false);
 	Segregation->setAggregation(new Maximum);
-	Segregation->setDefuzzifier(new MeanOfMaximum(500));
+	Segregation->setDefuzzifier(new Centroid());
 	Segregation->setDefaultValue(fl::nan);
 	Segregation->setLockPreviousValue(false);
 	Segregation->addTerm(Discrete::create("1", 6, 1.000, 1.000, 2.250, 0.000, 4.000, 0.000));
@@ -99,10 +99,8 @@ double FuzzyMachine::RunCalculation(double size, double intensity)
 	Intensity->setValue(intensity);
 	engine->process();
 
-	double dupa = Segregation->getValue();
+	return Segregation->getValue();
 
-
-	return dupa;
 }
 
 double FuzzyMachine::FuzzyFunction(double start, double end, double step, double value)
