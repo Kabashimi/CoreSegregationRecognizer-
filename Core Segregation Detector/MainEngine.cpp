@@ -231,7 +231,8 @@ void MainEngine::RunCalculation()
 	//ShowImage(src3, "Wynik3");
 
 	FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
-	fuzzy.CalculateSegregationClass(segregationSize, segregationIntensity);
+	//fuzzy.CalculateSegregationClass(segregationSize, segregationIntensity);
+	fuzzy.RunCalculation(segregationSize, segregationIntensity);
 
 	calculationsReady = true;
 

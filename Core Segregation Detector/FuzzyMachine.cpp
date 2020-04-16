@@ -12,15 +12,97 @@ FuzzyMachine::FuzzyMachine(double pStart, double pEnd, double sStart, double sEn
 	this->pEnd = pEnd;
 	this->sStart = sStart;
 	this->sEnd = sEnd;
-
-	Engine* engine = new Engine;
-	engine->setName("Laundry");
-	engine->setDescription("");
 }
 
 
 FuzzyMachine::~FuzzyMachine()
 {
+}
+
+double FuzzyMachine::RunCalculation(double size, double intensity)
+{
+	Engine* engine = new Engine;
+	engine->setName("Segregator");
+	engine->setDescription("");
+
+	InputVariable* Size = new InputVariable;
+	Size->setName("Size");
+	Size->setDescription("size of area highlighted as a segregation in percentage of entire examinated area");
+	Size->setEnabled(true);
+	Size->setRange(0.000, 0.400);
+	Size->setLockValueInRange(false);
+	Size->addTerm(Discrete::create("very_small", 6, 0.000, 1.000, 0.175, 1.000, 0.215, 0.000));
+	Size->addTerm(Discrete::create("small", 8, 0.175, 0.000, 0.215, 1.000, 0.235, 1.000, 0.275, 0.000));
+	Size->addTerm(Discrete::create("medium", 8, 0.235, 0.000, 0.275, 1.000, 0.285, 1.000, 0.315, 0.000));
+	Size->addTerm(Discrete::create("large", 6, 0.285, 0.000, 0.315, 1.000, 0.400, 1.000));
+	engine->addInputVariable(Size);
+
+	InputVariable* Intensity = new InputVariable;
+	Intensity->setName("Intensity");
+	Intensity->setDescription("mean intensity of highlithed area when compared with image color parameters");
+	Intensity->setEnabled(true);
+	Intensity->setRange(0.000, 0.400);
+	Intensity->setLockValueInRange(false);
+	Intensity->addTerm(Discrete::create("very_small", 6, 0.000, 1.000, 0.015, 1.000, 0.025, 0.000));
+	Intensity->addTerm(Discrete::create("small", 8, 0.015, 0.000, 0.025, 1.000, 0.035, 1.000, 0.045, 0.000));
+	Intensity->addTerm(Discrete::create("medium", 8, 0.035, 0.000, 0.045, 1.000, 0.055, 1.000, 0.065, 0.000));
+	Intensity->addTerm(Discrete::create("large", 6, 0.055, 0.000, 0.065, 1.000, 0.100, 1.000));
+	engine->addInputVariable(Intensity);
+
+	OutputVariable* Segregation = new OutputVariable;
+	Segregation->setName("Segregation");
+	Segregation->setDescription("");
+	Segregation->setEnabled(true);
+	Segregation->setRange(1.000, 4.000);
+	Segregation->setLockValueInRange(false);
+	Segregation->setAggregation(new Maximum);
+	Segregation->setDefuzzifier(new MeanOfMaximum(500));
+	Segregation->setDefaultValue(fl::nan);
+	Segregation->setLockPreviousValue(false);
+	Segregation->addTerm(Discrete::create("1", 6, 1.000, 1.000, 2.250, 0.000, 4.000, 0.000));
+	Segregation->addTerm(Discrete::create("1_5", 6, 1.000, 0.000, 1.435, 1.000, 1.850, 0.000));
+	Segregation->addTerm(Discrete::create("2", 6, 1.000, 0.000, 1.800, 1.000, 2.775, 0.000));
+	Segregation->addTerm(Discrete::create("3", 6, 1.935, 0.000, 2.915, 1.000, 4.000, 0.000));
+	Segregation->addTerm(Discrete::create("4", 4, 2.750, 0.000, 4.000, 1.000));
+	engine->addOutputVariable(Segregation);
+
+	RuleBlock* ruleBlock = new RuleBlock;
+	ruleBlock->setName("");
+	ruleBlock->setDescription("");
+	ruleBlock->setEnabled(true);
+	ruleBlock->setConjunction(new Minimum);
+	ruleBlock->setDisjunction(new Maximum);
+	ruleBlock->setImplication(new Minimum);
+	ruleBlock->setActivation(new General);
+	ruleBlock->addRule(Rule::parse("if Size is very_small and Intensity is very_small then Segregation is 1", engine));
+	ruleBlock->addRule(Rule::parse("if Size is small and Intensity is very_small then Segregation is 1_5", engine));
+	ruleBlock->addRule(Rule::parse("if Size is medium and Intensity is very_small then Segregation is 1_5", engine));
+	ruleBlock->addRule(Rule::parse("if Size is large and Intensity is very_small then Segregation is 1_5", engine));
+
+	ruleBlock->addRule(Rule::parse("if Size is very_small and Intensity is small then Segregation is 1", engine));
+	ruleBlock->addRule(Rule::parse("if Size is small and Intensity is small then Segregation is 1_5", engine));
+	ruleBlock->addRule(Rule::parse("if Size is medium and Intensity is small then Segregation is 2", engine));
+	ruleBlock->addRule(Rule::parse("if Size is large and Intensity is small then Segregation is 2", engine));
+
+	ruleBlock->addRule(Rule::parse("if Size is very_small and Intensity is medium then Segregation is 1_5", engine));
+	ruleBlock->addRule(Rule::parse("if Size is small and Intensity is medium then Segregation is 1_5", engine));
+	ruleBlock->addRule(Rule::parse("if Size is medium and Intensity is medium then Segregation is 2", engine));
+	ruleBlock->addRule(Rule::parse("if Size is large and Intensity is medium then Segregation is 2", engine));
+	
+	ruleBlock->addRule(Rule::parse("if Size is very_small and Intensity is large then Segregation is 2", engine));
+	ruleBlock->addRule(Rule::parse("if Size is small and Intensity is large then Segregation is 3", engine));
+	ruleBlock->addRule(Rule::parse("if Size is medium and Intensity is large then Segregation is 3", engine));
+	ruleBlock->addRule(Rule::parse("if Size is large and Intensity is large then Segregation is 3", engine));
+	engine->addRuleBlock(ruleBlock);
+
+	Size->setValue(size);
+	Intensity->setValue(intensity);
+	engine->process();
+
+	double dupa = Segregation->getValue();
+
+
+	return dupa;
 }
 
 double FuzzyMachine::FuzzyFunction(double start, double end, double step, double value)
