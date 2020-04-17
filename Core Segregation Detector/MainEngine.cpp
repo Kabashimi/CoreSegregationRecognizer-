@@ -13,6 +13,7 @@ MainEngine::MainEngine()
 	segregationIntensity = 0.0;
 	outerRingMeanColor = 0.0;
 	segregationTresholdColor = 0;
+	segregationValue = 0.0;
 }
 
 MainEngine::MainEngine(System::String^ path)
@@ -27,6 +28,7 @@ MainEngine::MainEngine(System::String^ path)
 	segregationIntensity = 0.0;
 	outerRingMeanColor = 0.0;
 	segregationTresholdColor = 0;
+	segregationValue = 0.0;
 }
 
 
@@ -187,7 +189,7 @@ void MainEngine::RunCalculation()
 	List<List<Cell^>^>^ previousDataGrid = gcnew List<List<Cell^>^>;
 	cv::Mat previousSrc3 = src3.clone();
 
-	while (automata->outerRingActiveCellsNumber > 10)
+	while (automata->outerRingActiveCellsNumber > 5)
 	{
 		previousDataGrid = dataGrid;
 		previousSrc3 = src3.clone();
@@ -207,10 +209,10 @@ void MainEngine::RunCalculation()
 	editedImage = imgUtility->DrawBitmap(src3);
 	editedImageReady = true;
 
-	float segregationSegmentsCounter = 0;
-	float segregationValueSum = 0;
+	float segregationSegmentsCounter = automata->innerActiveSegmentNumber;
+	float segregationValueSum = automata->innerActiveValueSum;
 
-	for (int i = 0; i < dataGrid->Count; i++) {
+	/*for (int i = 0; i < dataGrid->Count; i++) {
 		List<Cell^>^ dataRow = dataGrid[i];
 		for (int j = 0; j < dataRow->Count; j++) {
 			if (dataRow[j]->automatonActive) {
@@ -218,7 +220,7 @@ void MainEngine::RunCalculation()
 				segregationValueSum += dataRow[j]->value;
 			}
 		}
-	}
+	}*/
 
 	segregationTresholdColor = tresholdColor;
 
@@ -230,13 +232,15 @@ void MainEngine::RunCalculation()
 
 	//ShowImage(src3, "Wynik3");
 
-	FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
-	//fuzzy.CalculateSegregationClass(segregationSize, segregationIntensity);
-	double calculatedSegregation = fuzzy.RunCalculation(segregationSize, segregationIntensity);
+	//FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
+	////fuzzy.CalculateSegregationClass(segregationSize, segregationIntensity);
+	//segregationValue = fuzzy.RunCalculation(segregationSize, segregationIntensity);
+
+	segregationValue = FuzzyMachine::CalculateSegregation(segregationSize, segregationIntensity);
 
 	calculationsReady = true;
 
-	FileUtility::WriteResultToFile(segregationSize, segregationIntensity, calculatedSegregation);
+	FileUtility::WriteResultToFile(segregationSize, segregationIntensity, segregationValue);
 
 
 	/*cv::namedWindow("Wynik 3", CV_WINDOW_AUTOSIZE);
@@ -258,6 +262,11 @@ double MainEngine::getSegregationSize()
 double MainEngine::getSegregationIntensity()
 {
 	return ceil(segregationIntensity*10000.0) / 10000.0;
+}
+
+double MainEngine::getSegregationValue()
+{
+	return ceil(segregationValue*100.0) / 100.0;
 }
 
 int MainEngine::getMinimalColorValue()

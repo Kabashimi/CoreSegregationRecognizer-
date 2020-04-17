@@ -100,7 +100,15 @@ double FuzzyMachine::RunCalculation(double size, double intensity)
 	engine->process();
 
 	return Segregation->getValue();
+}
 
+double FuzzyMachine::CalculateSegregation(double size, double intensity)
+{
+	Engine* engine = FisImporter().fromFile("FuzzyLogicDefinition.fis");
+	engine->setInputValue("Size", size);
+	engine->setInputValue("Intensity", intensity);
+	engine->process();
+	return engine->getOutputValue("Segregation");
 }
 
 double FuzzyMachine::FuzzyFunction(double start, double end, double step, double value)

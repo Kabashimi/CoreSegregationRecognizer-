@@ -14,6 +14,8 @@ public:
 	~Automata();
 	List<List<Cell^>^>^ runNaiveEvolution(int tresholdValue, int neighboursNumber);
 	int outerRingActiveCellsNumber;
+	int innerActiveSegmentNumber;
+	double innerActiveValueSum;
 
 private:
 	float meanRange;

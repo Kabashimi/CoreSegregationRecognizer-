@@ -8,6 +8,8 @@ Automata::Automata(List<List<Cell^>^>^ dataGrid, float meanRange)
 	newDataGrid = dataGrid;
 	outerRingActiveCellsNumber = -1;
 	this->meanRange = meanRange;
+	innerActiveSegmentNumber = 0;
+	innerActiveValueSum = 0;
 }
 
 Automata::~Automata()
@@ -23,7 +25,7 @@ List<List<Cell^>^>^ Automata::runNaiveEvolution(int tresholdValue, int neighbour
 		List<Cell^>^ datagridRow = dataGrid[i];
 		List<Cell^>^ newdatagridRow = newDataGrid[i];
 		for (int j = 0; j < dataGrid[i]->Count; j++) {
-			
+
 			if (!datagridRow[j]->active || datagridRow[j]->value >= tresholdValue || !datagridRow[j]->automatonActive) {
 				datagridRow[j]->automatonActive = false;
 				continue;
@@ -42,6 +44,10 @@ List<List<Cell^>^>^ Automata::runNaiveEvolution(int tresholdValue, int neighbour
 				newdatagridRow[j]->automatonActive = true;
 				if (datagridRow[j]->distanceToCenter > meanRange) {
 					outerRingActiveCellsNumber++;
+				}
+				else {
+					innerActiveSegmentNumber++;
+					innerActiveValueSum += datagridRow[j]->value;
 				}
 			}
 			else {

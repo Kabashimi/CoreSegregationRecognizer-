@@ -65,6 +65,11 @@ namespace CoreSegregationDetector {
 	private: System::Windows::Forms::Label^  outerMeanColorLabel;
 	private: System::Windows::Forms::Label^  maximalColorLabel;
 	private: System::Windows::Forms::Label^  segregationColorValueLabel;
+	private: System::Windows::Forms::Label^  segregationValueLabel;
+
+	private: System::Windows::Forms::Label^  label1;
+
+
 
 
 	private: System::ComponentModel::IContainer^  components;
@@ -86,13 +91,15 @@ namespace CoreSegregationDetector {
 			this->loadingLabel = (gcnew System::Windows::Forms::Label());
 			this->calculationsLabel = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->segregationValueLabel = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->segregationIntensityLabel = (gcnew System::Windows::Forms::Label());
 			this->segregationSizeLable = (gcnew System::Windows::Forms::Label());
 			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->segregationColorValueLabel = (gcnew System::Windows::Forms::Label());
 			this->outerMeanColorLabel = (gcnew System::Windows::Forms::Label());
 			this->maximalColorLabel = (gcnew System::Windows::Forms::Label());
 			this->minimalColorLabel = (gcnew System::Windows::Forms::Label());
-			this->segregationColorValueLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			this->groupBox1->SuspendLayout();
@@ -155,32 +162,55 @@ namespace CoreSegregationDetector {
 			// 
 			// groupBox1
 			// 
+			this->groupBox1->Controls->Add(this->segregationValueLabel);
+			this->groupBox1->Controls->Add(this->label1);
 			this->groupBox1->Controls->Add(this->segregationIntensityLabel);
 			this->groupBox1->Controls->Add(this->segregationSizeLable);
 			this->groupBox1->Location = System::Drawing::Point(219, 688);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(200, 100);
+			this->groupBox1->Size = System::Drawing::Size(339, 100);
 			this->groupBox1->TabIndex = 5;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Measured segregation";
+			// 
+			// segregationValueLabel
+			// 
+			this->segregationValueLabel->AutoSize = true;
+			this->segregationValueLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(238)));
+			this->segregationValueLabel->Location = System::Drawing::Point(71, 46);
+			this->segregationValueLabel->Name = L"segregationValueLabel";
+			this->segregationValueLabel->Size = System::Drawing::Size(29, 31);
+			this->segregationValueLabel->TabIndex = 3;
+			this->segregationValueLabel->Text = L"0";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(7, 55);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(67, 13);
+			this->label1->TabIndex = 2;
+			this->label1->Text = L"Segregation:";
+			this->label1->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
 			// 
 			// segregationIntensityLabel
 			// 
 			this->segregationIntensityLabel->AutoSize = true;
 			this->segregationIntensityLabel->Location = System::Drawing::Point(7, 33);
 			this->segregationIntensityLabel->Name = L"segregationIntensityLabel";
-			this->segregationIntensityLabel->Size = System::Drawing::Size(16, 13);
+			this->segregationIntensityLabel->Size = System::Drawing::Size(112, 13);
 			this->segregationIntensityLabel->TabIndex = 1;
-			this->segregationIntensityLabel->Text = L"   ";
+			this->segregationIntensityLabel->Text = L"Segregation Intensity: ";
 			// 
 			// segregationSizeLable
 			// 
 			this->segregationSizeLable->AutoSize = true;
 			this->segregationSizeLable->Location = System::Drawing::Point(7, 20);
 			this->segregationSizeLable->Name = L"segregationSizeLable";
-			this->segregationSizeLable->Size = System::Drawing::Size(16, 13);
+			this->segregationSizeLable->Size = System::Drawing::Size(93, 13);
 			this->segregationSizeLable->TabIndex = 0;
-			this->segregationSizeLable->Text = L"   ";
+			this->segregationSizeLable->Text = L"Segregation Size: ";
 			this->segregationSizeLable->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 			// 
 			// groupBox2
@@ -195,6 +225,15 @@ namespace CoreSegregationDetector {
 			this->groupBox2->TabIndex = 6;
 			this->groupBox2->TabStop = false;
 			this->groupBox2->Text = L"Image parameters";
+			// 
+			// segregationColorValueLabel
+			// 
+			this->segregationColorValueLabel->AutoSize = true;
+			this->segregationColorValueLabel->Location = System::Drawing::Point(6, 55);
+			this->segregationColorValueLabel->Name = L"segregationColorValueLabel";
+			this->segregationColorValueLabel->Size = System::Drawing::Size(136, 13);
+			this->segregationColorValueLabel->TabIndex = 3;
+			this->segregationColorValueLabel->Text = L"Segregation treshold color: ";
 			// 
 			// outerMeanColorLabel
 			// 
@@ -222,15 +261,6 @@ namespace CoreSegregationDetector {
 			this->minimalColorLabel->Size = System::Drawing::Size(74, 13);
 			this->minimalColorLabel->TabIndex = 0;
 			this->minimalColorLabel->Text = L"Minimal color: ";
-			// 
-			// segregationColorValueLabel
-			// 
-			this->segregationColorValueLabel->AutoSize = true;
-			this->segregationColorValueLabel->Location = System::Drawing::Point(6, 55);
-			this->segregationColorValueLabel->Name = L"segregationColorValueLabel";
-			this->segregationColorValueLabel->Size = System::Drawing::Size(136, 13);
-			this->segregationColorValueLabel->TabIndex = 3;
-			this->segregationColorValueLabel->Text = L"Segregation treshold color: ";
 			// 
 			// MyForm
 			// 
@@ -272,17 +302,13 @@ namespace CoreSegregationDetector {
 					mainEngine = gcnew MainEngine(filePath);
 					myStream->Close();
 
-					//mainEngine->SetPath(filePath);
+					pictureBox1->Image = nullptr;
+					pictureBox2->Image = nullptr;
+
 					System::Threading::Thread^ t1 = gcnew System::Threading::Thread(gcnew System::Threading::ThreadStart(mainEngine, &MainEngine::RunCalculation));
-					//mainEngine->RunCalculation(msclr::interop::marshal_as<std::string>(openFileDialog1->FileName));
-					//System::Drawing::Bitmap dupa = msclr::interop::marshal_as<System::Drawing::Bitmap>(mainEngine->originalImage);
-					//Bitmap^ resized = gcnew System::Drawing::Bitmap(mainEngine->originalImage, new System::Drawing::Size(853, 640)));
-					//pictureBox1->Image = mainEngine->originalImage;
 					t1->Start();
 					timer1->Enabled = true;
 					loadingLabel->Visible = true;
-					//pictureBox1->Image = mainEngine->originalImage;
-					//pictureBox2->Image = mainEngine->editedImage;
 				}
 			}
 			//this->filePath = filePath;
@@ -309,8 +335,11 @@ namespace CoreSegregationDetector {
 			maximalColorLabel->Text = "Maximal color: " + mainEngine->getMaximalColorValue();
 			outerMeanColorLabel->Text = "Outer ring mean color:  " + mainEngine->getOuterRingMeanValue();
 			segregationColorValueLabel->Text = "Segregation treshold color: " + mainEngine->getSegregationTresholdColorValue();
+			segregationValueLabel->Text = mainEngine->getSegregationValue().ToString();
 
 		}
 	}
+private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
+}
 };
 }
