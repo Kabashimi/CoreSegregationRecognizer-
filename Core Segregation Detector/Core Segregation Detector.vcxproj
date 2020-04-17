@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Automata.cpp" />
+    <ClCompile Include="BitmapDrawer.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CircleDetector.cpp" />
     <ClCompile Include="FileUtility.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Automata.h" />
+    <ClInclude Include="BitmapDrawer.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CircleDetector.h" />
     <ClInclude Include="FileUtility.h" />

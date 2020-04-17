@@ -41,9 +41,14 @@ void MainEngine::RunCalculation()
 	System::String^ tmpPath = filePath;
 	std::string path = msclr::interop::marshal_as<std::string>(tmpPath);
 	cv::Mat src = imgUtility->ImageLoad(path);
+	cv::Mat src_safe_copy = src.clone();
 
-	originalImage = imgUtility->DrawBitmap(src);
-	originalImageReady = true;
+	//originalImage = imgUtility->DrawBitmap(src);
+	//originalImageReady = true;
+
+	BitmapDrawer^ drawer1 = gcnew BitmapDrawer(src_safe_copy);
+	System::Threading::Thread^ drawingThread1 = gcnew System::Threading::Thread(gcnew System::Threading::ThreadStart(drawer1, &BitmapDrawer::DrawBitmap));
+	drawingThread1->Start();
 
 	cv::Mat src_gray;
 	cv::Mat hist;
@@ -205,9 +210,12 @@ void MainEngine::RunCalculation()
 	DrawGrid(src3, dataGrid);
 
 
+	BitmapDrawer^ drawer2 = gcnew BitmapDrawer(src3);
+	System::Threading::Thread^ drawingThread2 = gcnew System::Threading::Thread(gcnew System::Threading::ThreadStart(drawer2	, &BitmapDrawer::DrawBitmap));
+	drawingThread2->Start();
 
-	editedImage = imgUtility->DrawBitmap(src3);
-	editedImageReady = true;
+	//editedImage = imgUtility->DrawBitmap(src3);
+	//editedImageReady = true;
 
 	float segregationSegmentsCounter = automata->innerActiveSegmentNumber;
 	float segregationValueSum = automata->innerActiveValueSum;
@@ -237,6 +245,12 @@ void MainEngine::RunCalculation()
 	//segregationValue = fuzzy.RunCalculation(segregationSize, segregationIntensity);
 
 	segregationValue = FuzzyMachine::CalculateSegregation(segregationSize, segregationIntensity);
+
+
+	drawingThread1->Join();
+	drawingThread2->Join();
+	originalImage = drawer1->bitmap;
+	editedImage = drawer2->bitmap;
 
 	calculationsReady = true;
 

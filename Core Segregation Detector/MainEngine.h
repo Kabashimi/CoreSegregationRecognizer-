@@ -15,6 +15,7 @@
 #include<fstream>
 #include "ImageUtility.h"
 #include "FileUtility.h"
+#include "BitmapDrawer.h"
 
 
 

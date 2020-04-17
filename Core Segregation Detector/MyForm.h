@@ -325,7 +325,11 @@ namespace CoreSegregationDetector {
 			pictureBox2->Image = mainEngine->editedImage;
 		}
 		if (mainEngine->calculationsReady) {
+			pictureBox1->Image = mainEngine->originalImage;
+			pictureBox2->Image = mainEngine->editedImage;
+
 			timer1->Enabled = false;
+			loadingLabel->Visible = false;
 			calculationsLabel->Visible = false;
 			//wypisz wyniki
 			segregationSizeLable->Text = "Segregation Size: " + mainEngine->getSegregationSize()*100 + "%";
