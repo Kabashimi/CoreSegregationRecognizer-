@@ -183,35 +183,60 @@ void MainEngine::RunCalculation()
 	cv::Mat src2 = src.clone();
 	DrawGrid(src2, dataGrid, outerRingMeanColor);
 
+	//cv::Mat src3 = src.clone();
+	//double percent = 0.5;
+	//int tresholdColor = (percent*(highestColor - lowestColor)) + lowestColor;
+	////int tresholdAutomataValue = outerRingMeanColor - lowestToMeanColor * 0.3;
+	//Automata^ automata = gcnew Automata(dataGrid, meanRange);
+	//dataGrid = automata->runNaiveEvolution(tresholdColor, 2);
+	//dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
+
+	//List<List<Cell^>^>^ previousDataGrid = gcnew List<List<Cell^>^>;
+	//cv::Mat previousSrc3 = src3.clone();
+
+	//Automata^ backupAutomata = gcnew Automata()
+
+	//while (automata->outerRingActiveCellsNumber > 5 && automata->innerActiveSegmentNumber > 5)
+	//{
+	//	previousDataGrid = dataGrid;
+	//	previousSrc3 = src3.clone();
+	//	cv::Mat src3 = src.clone();
+	//	percent -= 0.05;
+	//	tresholdColor = (percent*(highestColor - lowestColor)) + lowestColor;
+	//	automata = gcnew Automata(dataGrid, meanRange);
+	//	dataGrid = automata->runNaiveEvolution(tresholdColor, 2);
+	//	dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
+	//}
+
 	cv::Mat src3 = src.clone();
 	double percent = 0.5;
 	int tresholdColor = (percent*(highestColor - lowestColor)) + lowestColor;
-	//int tresholdAutomataValue = outerRingMeanColor - lowestToMeanColor * 0.3;
 	Automata^ automata = gcnew Automata(dataGrid, meanRange);
-	dataGrid = automata->runNaiveEvolution(tresholdColor, 2);
-	dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
-
+	Automata^ previousAutomata = gcnew Automata(dataGrid, meanRange);
 	List<List<Cell^>^>^ previousDataGrid = gcnew List<List<Cell^>^>;
 	cv::Mat previousSrc3 = src3.clone();
 
-	while (automata->outerRingActiveCellsNumber > 5)
-	{
+	do {
+		previousAutomata = automata;
 		previousDataGrid = dataGrid;
 		previousSrc3 = src3.clone();
-		cv::Mat src3 = src.clone();
 		percent -= 0.05;
 		tresholdColor = (percent*(highestColor - lowestColor)) + lowestColor;
 		automata = gcnew Automata(dataGrid, meanRange);
 		dataGrid = automata->runNaiveEvolution(tresholdColor, 2);
-		dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
-	}
+		//dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
+
+	} while (automata->outerRingActiveCellsNumber > 5 && automata->innerActiveSegmentNumber > 5);
+	automata = previousAutomata;
+	dataGrid = previousDataGrid;
+	src3 = previousSrc3;
 
 
 	DrawGrid(src3, dataGrid);
 
 
 	BitmapDrawer^ drawer2 = gcnew BitmapDrawer(src3);
-	System::Threading::Thread^ drawingThread2 = gcnew System::Threading::Thread(gcnew System::Threading::ThreadStart(drawer2	, &BitmapDrawer::DrawBitmap));
+	System::Threading::Thread^ drawingThread2 = gcnew System::Threading::Thread(gcnew System::Threading::ThreadStart(drawer2, &BitmapDrawer::DrawBitmap));
 	drawingThread2->Start();
 
 	//editedImage = imgUtility->DrawBitmap(src3);
