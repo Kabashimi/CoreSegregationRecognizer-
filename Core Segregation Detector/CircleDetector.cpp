@@ -125,6 +125,10 @@ cv::Point CircleDetector::GetEdgePoint(cv::Point startPoint, cv::Vec2f direction
 		startPoint = edgeCandidate;
 		edgeCandidate.x += direction[1] * searchStep;
 		edgeCandidate.y += direction[0] * searchStep;
+		if (edgeCandidate.x < streakAccept || edgeCandidate.x > src->cols - streakAccept || edgeCandidate.y < streakAccept || edgeCandidate.y > src->rows - streakAccept) {
+			edgePoint = edgeCandidate;
+			break;
+		}
 		uchar tmp = src->at<uchar>(edgeCandidate);
 		if (src->at<uchar>(edgeCandidate) < tresholdColor)
 		{
