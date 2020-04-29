@@ -29,6 +29,13 @@ namespace CoreSegregationDetector {
 			MainEngine^ mainEngine = gcnew MainEngine();
 			//ThreadX^ o1 = gcnew ThreadX
 			//
+			toolTip1->SetToolTip(segregationSizeLable, "Percentage value of segregation size compared to sample size.");
+			toolTip2->SetToolTip(segregationIntensityLabel, "Measure of segregatation color in comparison with entire image colors.");
+			toolTip3->SetToolTip(segregationValueLabel, "Wighted mean of particular segregation classes assesment.");
+			toolTip4->SetToolTip(minimalColorLabel, "Color value of darkest pixel on image. Used to calculate segregations intensity.");
+			toolTip5->SetToolTip(maximalColorLabel, "Color value of brightest pixel on image. Used to calculate segregations intensity.");
+			toolTip6->SetToolTip(outerMeanColorLabel, "Mean color value of sample oter ring (solid color). This are is usually considered mean value for entire sample (excluding segregation). Used to calculate segregations intensity.");
+			toolTip7->SetToolTip(segregationColorValueLabel, "Color treshold value used to seperate segregation from rest of sample in first step or recognition.");
 		}
 
 	protected:
@@ -68,6 +75,13 @@ namespace CoreSegregationDetector {
 	private: System::Windows::Forms::Label^  segregationValueLabel;
 
 	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::ToolTip^  toolTip1;
+	private: System::Windows::Forms::ToolTip^  toolTip2;
+	private: System::Windows::Forms::ToolTip^  toolTip3;
+	private: System::Windows::Forms::ToolTip^  toolTip4;
+	private: System::Windows::Forms::ToolTip^  toolTip5;
+	private: System::Windows::Forms::ToolTip^  toolTip6;
+	private: System::Windows::Forms::ToolTip^  toolTip7;
 
 
 
@@ -100,6 +114,13 @@ namespace CoreSegregationDetector {
 			this->outerMeanColorLabel = (gcnew System::Windows::Forms::Label());
 			this->maximalColorLabel = (gcnew System::Windows::Forms::Label());
 			this->minimalColorLabel = (gcnew System::Windows::Forms::Label());
+			this->toolTip1 = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->toolTip2 = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->toolTip3 = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->toolTip4 = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->toolTip5 = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->toolTip6 = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->toolTip7 = (gcnew System::Windows::Forms::ToolTip(this->components));
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			this->groupBox1->SuspendLayout();
