@@ -79,7 +79,6 @@ cv::Vec3f CircleDetector::DetectCircle()
 	cv::Point C = GetEdgePoint(center, cv::Vec2f(0.0, 1.0));
 	cv::Point D = GetEdgePoint(center, cv::Vec2f(0.0, -1.0));
 
-
 	float AB = LineLenght(A, B);
 	float BC = LineLenght(B, C);
 	float CA = LineLenght(C, A);
@@ -92,9 +91,7 @@ cv::Vec3f CircleDetector::DetectCircle()
 	R.x = ((pow(A.x, 2) + pow(A.y, 2))*(B.y - C.y) + (pow(B.x, 2) + pow(B.y, 2))*(C.y - A.y) + (pow(C.x, 2) + pow(C.y, 2))*(A.y - B.y)) / U;
 	R.y = ((pow(A.x, 2) + pow(A.y, 2))*(C.x - B.x) + (pow(B.x, 2) + pow(B.y, 2))*(A.x - C.x) + (pow(C.x, 2) + pow(C.y, 2))*(B.x - A.x)) / U;
 
-
 	//calculate radius without choosing bigges triangle (lets use ABC)
-
 	float halfPerimeter = (AB + BC + CA) / 2;
 	float innerCircleRadius = sqrt(((halfPerimeter - AB)*(halfPerimeter - BC)*(halfPerimeter - CA)) / halfPerimeter);
 	float radius = (AB*BC*CA) / (4 * innerCircleRadius*halfPerimeter);

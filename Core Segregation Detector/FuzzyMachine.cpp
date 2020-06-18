@@ -19,7 +19,7 @@ FuzzyMachine::~FuzzyMachine()
 {
 }
 
-double FuzzyMachine::RunCalculation(double size, double intensity)
+List<double>^ FuzzyMachine::RunCalculation(double size, double intensity)
 {
 	Engine* engine = new Engine;
 	engine->setName("Segregator");
@@ -31,10 +31,10 @@ double FuzzyMachine::RunCalculation(double size, double intensity)
 	Size->setEnabled(true);
 	Size->setRange(0.000, 0.400);
 	Size->setLockValueInRange(false);
-	Size->addTerm(Discrete::create("very_small", 6, 0.000, 1.000, 0.175, 1.000, 0.215, 0.000));
-	Size->addTerm(Discrete::create("small", 8, 0.175, 0.000, 0.215, 1.000, 0.235, 1.000, 0.275, 0.000));
-	Size->addTerm(Discrete::create("medium", 8, 0.235, 0.000, 0.275, 1.000, 0.285, 1.000, 0.315, 0.000));
-	Size->addTerm(Discrete::create("large", 6, 0.285, 0.000, 0.315, 1.000, 0.400, 1.000));
+	Size->addTerm(Discrete::create("very_small", 6, 0.000, 1.000, 0.015, 1.000, 0.100, 0.000));
+	Size->addTerm(Discrete::create("small", 8, 0.000, 0.000, 0.025, 1.000, 0.035, 1.000, 0.100, 0.000));
+	Size->addTerm(Discrete::create("medium", 8, 0.000, 0.000, 0.045, 1.000, 0.055, 1.000, 0.100, 0.000));
+	Size->addTerm(Discrete::create("large", 6, 0.000, 0.000, 0.065, 1.000, 0.100, 1.000));
 	engine->addInputVariable(Size);
 
 	InputVariable* Intensity = new InputVariable;
@@ -43,11 +43,14 @@ double FuzzyMachine::RunCalculation(double size, double intensity)
 	Intensity->setEnabled(true);
 	Intensity->setRange(0.000, 0.400);
 	Intensity->setLockValueInRange(false);
-	Intensity->addTerm(Discrete::create("very_small", 6, 0.000, 1.000, 0.015, 1.000, 0.025, 0.000));
-	Intensity->addTerm(Discrete::create("small", 8, 0.015, 0.000, 0.025, 1.000, 0.035, 1.000, 0.045, 0.000));
-	Intensity->addTerm(Discrete::create("medium", 8, 0.035, 0.000, 0.045, 1.000, 0.055, 1.000, 0.065, 0.000));
-	Intensity->addTerm(Discrete::create("large", 6, 0.055, 0.000, 0.065, 1.000, 0.100, 1.000));
+	Intensity->addTerm(Discrete::create("very_small", 6, 0.000, 1.000, 0.175, 1.000, 0.400, 0.000));
+	Intensity->addTerm(Discrete::create("small", 8, 0.000, 0.000, 0.215, 1.000, 0.235, 1.000, 0.400, 0.000));
+	Intensity->addTerm(Discrete::create("medium", 8, 0.000, 0.000, 0.275, 1.000, 0.285, 1.000, 0.400, 0.000));
+	Intensity->addTerm(Discrete::create("large", 6, 0.000, 0.000, 0.315, 1.000, 0.400, 1.000));
+
+	
 	engine->addInputVariable(Intensity);
+
 
 	OutputVariable* Segregation = new OutputVariable;
 	Segregation->setName("Segregation");
@@ -88,28 +91,58 @@ double FuzzyMachine::RunCalculation(double size, double intensity)
 	ruleBlock->addRule(Rule::parse("if Size is small and Intensity is medium then Segregation is 1_5", engine));
 	ruleBlock->addRule(Rule::parse("if Size is medium and Intensity is medium then Segregation is 2", engine));
 	ruleBlock->addRule(Rule::parse("if Size is large and Intensity is medium then Segregation is 2", engine));
-	
+
 	ruleBlock->addRule(Rule::parse("if Size is very_small and Intensity is large then Segregation is 2", engine));
 	ruleBlock->addRule(Rule::parse("if Size is small and Intensity is large then Segregation is 3", engine));
 	ruleBlock->addRule(Rule::parse("if Size is medium and Intensity is large then Segregation is 3", engine));
 	ruleBlock->addRule(Rule::parse("if Size is large and Intensity is large then Segregation is 3", engine));
+
 	engine->addRuleBlock(ruleBlock);
 
 	Size->setValue(size);
 	Intensity->setValue(intensity);
 	engine->process();
 
-	return Segregation->getValue();
+	/*double s1 = Segregation1->getValue();
+	double s2 = Segregation2->getValue();
+	double s3 = Segregation3->getValue();
+	double s4 = Segregation4->getValue();*/
+
+	double s1 = engine->getOutputVariable(0)->fuzzyOutput()->getTerm(0).getDegree();
+	double s2 = engine->getOutputVariable(0)->fuzzyOutput()->getTerm(1).getDegree();
+	double s3 = engine->getOutputVariable(0)->fuzzyOutput()->getTerm(2).getDegree();
+	double s4 = engine->getOutputVariable(0)->fuzzyOutput()->getTerm(3).getDegree();
+
+
+	FisExporter* exporter = new FisExporter();
+	exporter->toFile("testFile_2.fis", engine);
+
+	List<double>^ engineOutput = gcnew List<double>();
+	engineOutput->Add(s1);
+	engineOutput->Add(s2);
+	engineOutput->Add(s3);
+	engineOutput->Add(s4);
+
+	return engineOutput;
 }
 
-double FuzzyMachine::CalculateSegregation(double size, double intensity)
+List<double>^ FuzzyMachine::CalculateSegregation(double size, double intensity)
 {
-	Engine* engine = FisImporter().fromFile("FuzzyLogicDefinition.fis");
+	//Engine* engine = FisImporter().fromFile("FuzzyLogicDefinition.fis");
+	Engine* engine = FisImporter().fromFile("testFile_2.fis");
 	engine->setInputValue("Size", size);
 	engine->setInputValue("Intensity", intensity);
 	engine->process();
-	return engine->getOutputValue("Segregation");
+
+	List<double>^ engineOutput = gcnew List<double>();
+	engineOutput->Add(engine->getOutputVariable(0)->fuzzyOutput()->getTerm(0).getDegree());
+	engineOutput->Add(engine->getOutputVariable(0)->fuzzyOutput()->getTerm(1).getDegree());
+	engineOutput->Add(engine->getOutputVariable(0)->fuzzyOutput()->getTerm(2).getDegree());
+	engineOutput->Add(engine->getOutputVariable(0)->fuzzyOutput()->getTerm(3).getDegree());
+
+	return engineOutput;
 }
+
 
 double FuzzyMachine::FuzzyFunction(double start, double end, double step, double value)
 {

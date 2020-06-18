@@ -15,7 +15,6 @@ void BitmapDrawer::DrawBitmap()
 		for (int j = 0; j < mat->rows - 1; j++) {
 			cv::Scalar colour = mat->at<cv::Vec3b>(cv::Point(i, j));
 			bitmap->SetPixel(i, j, System::Drawing::Color::FromArgb(colour.val[2], colour.val[1], colour.val[0]));
-			//bitmap->SetPixel(j, i, System::Drawing::Color::White);
 		}
 	}
 	System::Drawing::Bitmap^ scaleBitmap = gcnew System::Drawing::Bitmap(bitmap, mat->cols / 3, mat->rows / 3);

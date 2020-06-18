@@ -74,7 +74,7 @@ namespace CoreSegregationDetector {
 	private: System::Windows::Forms::Label^  segregationColorValueLabel;
 	private: System::Windows::Forms::Label^  segregationValueLabel;
 
-	private: System::Windows::Forms::Label^  label1;
+
 	private: System::Windows::Forms::ToolTip^  toolTip1;
 	private: System::Windows::Forms::ToolTip^  toolTip2;
 	private: System::Windows::Forms::ToolTip^  toolTip3;
@@ -82,6 +82,14 @@ namespace CoreSegregationDetector {
 	private: System::Windows::Forms::ToolTip^  toolTip5;
 	private: System::Windows::Forms::ToolTip^  toolTip6;
 	private: System::Windows::Forms::ToolTip^  toolTip7;
+	private: System::Windows::Forms::Label^  segregationClass4MatchLabel;
+	private: System::Windows::Forms::Label^  segregationClass3MatchLabel;
+	private: System::Windows::Forms::Label^  segregationClass2MatchLabel;
+	private: System::Windows::Forms::Label^  segregationClass1MatchLabel;
+	private: System::Windows::Forms::Label^  label5;
+	private: System::Windows::Forms::Label^  label4;
+	private: System::Windows::Forms::Label^  label3;
+	private: System::Windows::Forms::Label^  label2;
 
 
 
@@ -106,7 +114,6 @@ namespace CoreSegregationDetector {
 			this->calculationsLabel = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->segregationValueLabel = (gcnew System::Windows::Forms::Label());
-			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->segregationIntensityLabel = (gcnew System::Windows::Forms::Label());
 			this->segregationSizeLable = (gcnew System::Windows::Forms::Label());
 			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
@@ -121,6 +128,14 @@ namespace CoreSegregationDetector {
 			this->toolTip5 = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->toolTip6 = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->toolTip7 = (gcnew System::Windows::Forms::ToolTip(this->components));
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->segregationClass1MatchLabel = (gcnew System::Windows::Forms::Label());
+			this->segregationClass2MatchLabel = (gcnew System::Windows::Forms::Label());
+			this->segregationClass3MatchLabel = (gcnew System::Windows::Forms::Label());
+			this->segregationClass4MatchLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			this->groupBox1->SuspendLayout();
@@ -183,13 +198,20 @@ namespace CoreSegregationDetector {
 			// 
 			// groupBox1
 			// 
+			this->groupBox1->Controls->Add(this->segregationClass4MatchLabel);
+			this->groupBox1->Controls->Add(this->segregationClass3MatchLabel);
+			this->groupBox1->Controls->Add(this->segregationClass2MatchLabel);
+			this->groupBox1->Controls->Add(this->segregationClass1MatchLabel);
+			this->groupBox1->Controls->Add(this->label5);
+			this->groupBox1->Controls->Add(this->label4);
+			this->groupBox1->Controls->Add(this->label3);
+			this->groupBox1->Controls->Add(this->label2);
 			this->groupBox1->Controls->Add(this->segregationValueLabel);
-			this->groupBox1->Controls->Add(this->label1);
 			this->groupBox1->Controls->Add(this->segregationIntensityLabel);
 			this->groupBox1->Controls->Add(this->segregationSizeLable);
 			this->groupBox1->Location = System::Drawing::Point(219, 688);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(339, 100);
+			this->groupBox1->Size = System::Drawing::Size(416, 100);
 			this->groupBox1->TabIndex = 5;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Measured segregation";
@@ -201,19 +223,8 @@ namespace CoreSegregationDetector {
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(238)));
 			this->segregationValueLabel->Location = System::Drawing::Point(71, 46);
 			this->segregationValueLabel->Name = L"segregationValueLabel";
-			this->segregationValueLabel->Size = System::Drawing::Size(29, 31);
+			this->segregationValueLabel->Size = System::Drawing::Size(0, 31);
 			this->segregationValueLabel->TabIndex = 3;
-			this->segregationValueLabel->Text = L"0";
-			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(7, 55);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(67, 13);
-			this->label1->TabIndex = 2;
-			this->label1->Text = L"Segregation:";
-			this->label1->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
 			// 
 			// segregationIntensityLabel
 			// 
@@ -283,6 +294,78 @@ namespace CoreSegregationDetector {
 			this->minimalColorLabel->TabIndex = 0;
 			this->minimalColorLabel->Text = L"Minimal color: ";
 			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(199, 20);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(137, 13);
+			this->label2->TabIndex = 4;
+			this->label2->Text = L"Segregation Class 1 Match:";
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(199, 33);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(137, 13);
+			this->label3->TabIndex = 5;
+			this->label3->Text = L"Segregation Class 2 Match:";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(199, 46);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(137, 13);
+			this->label4->TabIndex = 6;
+			this->label4->Text = L"Segregation Class 3 Match:";
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(199, 59);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(137, 13);
+			this->label5->TabIndex = 7;
+			this->label5->Text = L"Segregation Class 4 Match:";
+			// 
+			// segregationClass1MatchLabel
+			// 
+			this->segregationClass1MatchLabel->AutoSize = true;
+			this->segregationClass1MatchLabel->Location = System::Drawing::Point(342, 20);
+			this->segregationClass1MatchLabel->Name = L"segregationClass1MatchLabel";
+			this->segregationClass1MatchLabel->Size = System::Drawing::Size(16, 13);
+			this->segregationClass1MatchLabel->TabIndex = 8;
+			this->segregationClass1MatchLabel->Text = L"   ";
+			// 
+			// segregationClass2MatchLabel
+			// 
+			this->segregationClass2MatchLabel->AutoSize = true;
+			this->segregationClass2MatchLabel->Location = System::Drawing::Point(342, 33);
+			this->segregationClass2MatchLabel->Name = L"segregationClass2MatchLabel";
+			this->segregationClass2MatchLabel->Size = System::Drawing::Size(16, 13);
+			this->segregationClass2MatchLabel->TabIndex = 9;
+			this->segregationClass2MatchLabel->Text = L"   ";
+			// 
+			// segregationClass3MatchLabel
+			// 
+			this->segregationClass3MatchLabel->AutoSize = true;
+			this->segregationClass3MatchLabel->Location = System::Drawing::Point(342, 46);
+			this->segregationClass3MatchLabel->Name = L"segregationClass3MatchLabel";
+			this->segregationClass3MatchLabel->Size = System::Drawing::Size(16, 13);
+			this->segregationClass3MatchLabel->TabIndex = 10;
+			this->segregationClass3MatchLabel->Text = L"   ";
+			// 
+			// segregationClass4MatchLabel
+			// 
+			this->segregationClass4MatchLabel->AutoSize = true;
+			this->segregationClass4MatchLabel->Location = System::Drawing::Point(342, 59);
+			this->segregationClass4MatchLabel->Name = L"segregationClass4MatchLabel";
+			this->segregationClass4MatchLabel->Size = System::Drawing::Size(16, 13);
+			this->segregationClass4MatchLabel->TabIndex = 11;
+			this->segregationClass4MatchLabel->Text = L"   ";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -295,8 +378,8 @@ namespace CoreSegregationDetector {
 			this->Controls->Add(this->pictureBox2);
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->openFileButton);
-			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Name = L"Core Segregation Detector";
+			this->Text = L"Core Segregation Detector";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
 			this->groupBox1->ResumeLayout(false);
@@ -360,7 +443,10 @@ namespace CoreSegregationDetector {
 			maximalColorLabel->Text = "Maximal color: " + mainEngine->getMaximalColorValue();
 			outerMeanColorLabel->Text = "Outer ring mean color:  " + mainEngine->getOuterRingMeanValue();
 			segregationColorValueLabel->Text = "Segregation treshold color: " + mainEngine->getSegregationTresholdColorValue();
-			segregationValueLabel->Text = mainEngine->getSegregationValue().ToString();
+			segregationClass1MatchLabel->Text = mainEngine->getSegregationValue(0).ToString() + "%";
+			segregationClass2MatchLabel->Text = mainEngine->getSegregationValue(1).ToString() + "%";
+			segregationClass3MatchLabel->Text = mainEngine->getSegregationValue(2).ToString() + "%";
+			segregationClass4MatchLabel->Text = mainEngine->getSegregationValue(3).ToString() + "%";
 
 		}
 	}

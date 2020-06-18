@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+using namespace System::Collections::Generic;
 //#include <fl/Headers.h>
 
 //using namespace fl;
@@ -9,10 +11,10 @@ public:
 	FuzzyMachine(double, double, double, double);
 	~FuzzyMachine();
 
-	double RunCalculation(double, double);
+	static List<double>^ RunCalculation(double, double);
 	double FuzzyFunction(double start, double end, double step, double value);
 	void CalculateSegregationClass(double, double);
-	static double CalculateSegregation(double, double);
+	static List<double>^ CalculateSegregation(double, double);
 
 	double pStart, pEnd, sStart, sEnd;
 };

@@ -1,4 +1,3 @@
-//#include "pch.h"
 #include "Automata.h"
 
 
@@ -30,9 +29,6 @@ List<List<Cell^>^>^ Automata::runNaiveEvolution(int tresholdValue, int neighbour
 				datagridRow[j]->automatonActive = false;
 				continue;
 			}
-			/*if (dataGrid[i][j].value < tresholdValue) {
-				dataGrid[i][j].automatonActive = true;
-			}*/
 			tmpNeighbours = getVonNeumannNeighbours(i, j);
 			for (int iterator = 0; iterator < tmpNeighbours->Count; iterator++)
 			{

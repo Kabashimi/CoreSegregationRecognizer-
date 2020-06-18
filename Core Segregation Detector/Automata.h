@@ -1,11 +1,8 @@
 #pragma once
 
 #include "Cell.h"
-//#include <vector>
-//#include "stdafx.h"
 using namespace System;
 using namespace System::Collections::Generic;
-//using namespace std;
 
 ref class Automata
 {

@@ -13,7 +13,6 @@ MainEngine::MainEngine()
 	segregationIntensity = 0.0;
 	outerRingMeanColor = 0.0;
 	segregationTresholdColor = 0;
-	segregationValue = 0.0;
 }
 
 MainEngine::MainEngine(System::String^ path)
@@ -28,7 +27,6 @@ MainEngine::MainEngine(System::String^ path)
 	segregationIntensity = 0.0;
 	outerRingMeanColor = 0.0;
 	segregationTresholdColor = 0;
-	segregationValue = 0.0;
 }
 
 
@@ -224,9 +222,8 @@ void MainEngine::RunCalculation()
 		tresholdColor = (percent*(highestColor - lowestColor)) + lowestColor;
 		automata = gcnew Automata(dataGrid, meanRange);
 		dataGrid = automata->runNaiveEvolution(tresholdColor, 2);
-		//dataGrid = automata->runNaiveEvolution(tresholdColor, 1);
-
 	} while (automata->outerRingActiveCellsNumber > 5 && automata->innerActiveSegmentNumber > 5);
+
 	automata = previousAutomata;
 	dataGrid = previousDataGrid;
 	src3 = previousSrc3;
@@ -267,10 +264,10 @@ void MainEngine::RunCalculation()
 
 	//FuzzyMachine fuzzy(0.2, 0.3, 0.002, 0.006);
 	////fuzzy.CalculateSegregationClass(segregationSize, segregationIntensity);
-	//segregationValue = fuzzy.RunCalculation(segregationSize, segregationIntensity);
-
-	segregationValue = FuzzyMachine::CalculateSegregation(segregationSize, segregationIntensity);
-
+	//segregationClassMatch = FuzzyMachine::RunCalculation(segregationSize, segregationIntensity);
+	//segregationValue = FuzzyMachine::RunCalculation(0.25, 0.04);
+	segregationClassMatch = FuzzyMachine::CalculateSegregation(segregationSize, segregationIntensity);
+	
 
 	drawingThread1->Join();
 	drawingThread2->Join();
@@ -279,7 +276,7 @@ void MainEngine::RunCalculation()
 
 	calculationsReady = true;
 
-	FileUtility::WriteResultToFile(segregationSize, segregationIntensity, segregationValue);
+	FileUtility::WriteResultToFile(segregationSize, segregationIntensity, segregationClassMatch);
 
 
 	/*cv::namedWindow("Wynik 3", CV_WINDOW_AUTOSIZE);
@@ -303,9 +300,9 @@ double MainEngine::getSegregationIntensity()
 	return ceil(segregationIntensity*10000.0) / 10000.0;
 }
 
-double MainEngine::getSegregationValue()
+double MainEngine::getSegregationValue(int index)
 {
-	return ceil(segregationValue*100.0) / 100.0;
+	return ceil(segregationClassMatch[index]*1000.0) / 10.0;
 }
 
 int MainEngine::getMinimalColorValue()
@@ -360,8 +357,8 @@ cv::Mat MainEngine::DrawHistogram(cv::Mat src_gray)
 	std::cout << "SUCCESS\n";
 
 	/// Display
-	/*cv::namedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE);
-	imshow("calcHist Demo", histImage);*/
+	cv::namedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE);
+	imshow("calcHist Demo", histImage);
 	return hist;
 }
 

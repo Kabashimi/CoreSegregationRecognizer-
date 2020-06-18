@@ -35,7 +35,7 @@ public:
 	Boolean calculationsReady;
 	double getSegregationSize();
 	double getSegregationIntensity();
-	double getSegregationValue();
+	double getSegregationValue(int);
 	int getMinimalColorValue();
 	int getMaximalColorValue();
 	double getOuterRingMeanValue();
@@ -49,7 +49,7 @@ private:
 	void DrawGrid(cv::Mat, List<List<Cell^>^>^);
 	double segregationSize;
 	double segregationIntensity;
-	double segregationValue;
+	List<double>^ segregationClassMatch;
 	float outerRingMeanColor;
 	int highestColor;
 	int lowestColor;
